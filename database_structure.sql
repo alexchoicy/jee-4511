@@ -10,116 +10,133 @@ DROP DATABASE IF EXISTS `4511`;
 CREATE DATABASE `4511`;
 USE `4511`;
 
+DROP TABLE IF EXISTS `Roles`;
+CREATE TABLE `Roles` (
+                         `roleId` int NOT NULL,
+                         `roleName` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                         PRIMARY KEY (`roleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
 DROP TABLE IF EXISTS `campus`;
 CREATE TABLE `campus` (
-  `campusID` int NOT NULL AUTO_INCREMENT,
-  `campusLocation` text COLLATE utf8mb4_general_ci NOT NULL,
-  `campusName` text COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`campusID`)
+                          `campusId` int NOT NULL AUTO_INCREMENT,
+                          `campusLocation` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                          `campusName` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                          PRIMARY KEY (`campusId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `damaged_records`;
 CREATE TABLE `damaged_records` (
-  `damged_recordID` int NOT NULL AUTO_INCREMENT,
-  `equipmentID` int NOT NULL,
-  `reportedDate` datetime NOT NULL,
-  PRIMARY KEY (`damged_recordID`),
-  KEY `equipmentID` (`equipmentID`),
-  CONSTRAINT `damaged_records_ibfk_1` FOREIGN KEY (`equipmentID`) REFERENCES `equipments` (`equipmentid`)
+                                   `damaged_recordId` int NOT NULL AUTO_INCREMENT,
+                                   `equipmentId` int NOT NULL,
+                                   `reportedDate` datetime NOT NULL,
+                                   PRIMARY KEY (`damaged_recordId`),
+                                   KEY `equipmentId` (`equipmentId`),
+                                   CONSTRAINT `damaged_records_ibfk_1` FOREIGN KEY (`equipmentId`) REFERENCES `equipments` (`equipmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `delivery_record`;
 CREATE TABLE `delivery_record` (
-  `deliveryID` int NOT NULL AUTO_INCREMENT,
-  `deliveryBy` int NOT NULL,
-  `deliveryDate` datetime NOT NULL,
-  PRIMARY KEY (`deliveryID`),
-  KEY `deliveryBy` (`deliveryBy`),
-  CONSTRAINT `delivery_record_ibfk_1` FOREIGN KEY (`deliveryBy`) REFERENCES `users` (`userid`)
+                                   `deliveryId` int NOT NULL AUTO_INCREMENT,
+                                   `deliveryBy` int NOT NULL,
+                                   `deliveryDate` datetime NOT NULL,
+                                   PRIMARY KEY (`deliveryId`),
+                                   KEY `deliveryBy` (`deliveryBy`),
+                                   CONSTRAINT `delivery_record_ibfk_1` FOREIGN KEY (`deliveryBy`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `delivery_reservations`;
 CREATE TABLE `delivery_reservations` (
-  `delivery_reservationsID` int NOT NULL AUTO_INCREMENT,
-  `deliveryID` int NOT NULL,
-  `reservationsID` int NOT NULL,
-  PRIMARY KEY (`delivery_reservationsID`),
-  KEY `deliveryID` (`deliveryID`),
-  KEY `reservationsID` (`reservationsID`),
-  CONSTRAINT `delivery_reservations_ibfk_1` FOREIGN KEY (`deliveryID`) REFERENCES `delivery_record` (`deliveryID`),
-  CONSTRAINT `delivery_reservations_ibfk_2` FOREIGN KEY (`reservationsID`) REFERENCES `reservations` (`reservationid`)
+                                         `delivery_reservationsId` int NOT NULL AUTO_INCREMENT,
+                                         `deliveryId` int NOT NULL,
+                                         `reservationsId` int NOT NULL,
+                                         PRIMARY KEY (`delivery_reservationsId`),
+                                         KEY `deliveryId` (`deliveryId`),
+                                         KEY `reservationsId` (`reservationsId`),
+                                         CONSTRAINT `delivery_reservations_ibfk_1` FOREIGN KEY (`deliveryId`) REFERENCES `delivery_record` (`deliveryId`),
+                                         CONSTRAINT `delivery_reservations_ibfk_2` FOREIGN KEY (`reservationsId`) REFERENCES `reservations` (`reservationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+DROP TABLE IF EXISTS `equipment_status`;
+CREATE TABLE `equipment_status` (
+                                    `equipment_status` int NOT NULL,
+                                    `status_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                                    PRIMARY KEY (`equipment_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `equipments`;
 CREATE TABLE `equipments` (
-  `equipmentid` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `borrowedTimes` int NOT NULL,
-  `isStaffOnly` tinyint(1) NOT NULL,
-  `isUnlisted` tinyint(1) NOT NULL,
-  `currentLocation` int NOT NULL,
-  `Status` text COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`equipmentid`),
-  KEY `currentLocation` (`currentLocation`),
-  CONSTRAINT `equipments_ibfk_1` FOREIGN KEY (`currentLocation`) REFERENCES `campus` (`campusID`)
+                              `equipmentId` int NOT NULL AUTO_INCREMENT,
+                              `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                              `borrowedTimes` int NOT NULL,
+                              `isStaffOnly` tinyint(1) NOT NULL,
+                              `isUnlisted` tinyint(1) NOT NULL,
+                              `status` int NOT NULL,
+                              `currentLocation` int NOT NULL,
+                              PRIMARY KEY (`equipmentId`),
+                              KEY `currentLocation` (`currentLocation`),
+                              CONSTRAINT `equipments_ibfk_1` FOREIGN KEY (`currentLocation`) REFERENCES `campus` (`campusId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `reservation_itmes`;
 CREATE TABLE `reservation_itmes` (
-  `reservation_itmesid` int NOT NULL AUTO_INCREMENT,
-  `reservationid` int NOT NULL,
-  `equipmentid` int NOT NULL,
-  PRIMARY KEY (`reservation_itmesid`),
-  KEY `reservationid` (`reservationid`),
-  KEY `equipmentid` (`equipmentid`),
-  CONSTRAINT `reservation_itmes_ibfk_1` FOREIGN KEY (`reservationid`) REFERENCES `reservations` (`reservationid`),
-  CONSTRAINT `reservation_itmes_ibfk_2` FOREIGN KEY (`equipmentid`) REFERENCES `equipments` (`equipmentid`)
+                                     `reservation_itemId` int NOT NULL AUTO_INCREMENT,
+                                     `reservationId` int NOT NULL,
+                                     `equipmentId` int NOT NULL,
+                                     PRIMARY KEY (`reservation_itemId`),
+                                     KEY `reservationId` (`reservationId`),
+                                     KEY `equipmentId` (`equipmentId`),
+                                     CONSTRAINT `reservation_itmes_ibfk_1` FOREIGN KEY (`reservationId`) REFERENCES `reservations` (`reservationId`),
+                                     CONSTRAINT `reservation_itmes_ibfk_2` FOREIGN KEY (`equipmentId`) REFERENCES `equipments` (`equipmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `reservations`;
 CREATE TABLE `reservations` (
-  `reservationid` int NOT NULL AUTO_INCREMENT,
-  `userid` int NOT NULL,
-  `location` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `starttime` datetime NOT NULL,
-  `endtime` datetime NOT NULL,
-  `checkinTime` datetime DEFAULT NULL,
-  `checkoutTime` datetime DEFAULT NULL,
-  `createdAt` datetime NOT NULL DEFAULT (now()),
-  PRIMARY KEY (`reservationid`),
-  KEY `userid` (`userid`),
-  CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`)
+                                `reservationId` int NOT NULL AUTO_INCREMENT,
+                                `userId` int NOT NULL,
+                                `location` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                                `startTime` datetime NOT NULL,
+                                `endTime` datetime NOT NULL,
+                                `checkinTime` datetime DEFAULT NULL,
+                                `checkoutTime` datetime DEFAULT NULL,
+                                `createdAt` datetime NOT NULL DEFAULT (now()),
+                                PRIMARY KEY (`reservationId`),
+                                KEY `userId` (`userId`),
+                                CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `userid` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `phonenumber` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `firstname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `lastname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `role` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`userid`)
+                         `userId` int NOT NULL AUTO_INCREMENT,
+                         `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+                         `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                         `phoneNumber` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+                         `firstName` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                         `lastName` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+                         `role` int NOT NULL,
+                         PRIMARY KEY (`userId`),
+                         KEY `role` (`role`),
+                         CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role`) REFERENCES `Roles` (`roleId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 DROP TABLE IF EXISTS `wishlist_items`;
 CREATE TABLE `wishlist_items` (
-  `wishlistid` int NOT NULL AUTO_INCREMENT,
-  `userid` int NOT NULL,
-  `equipmentid` int NOT NULL,
-  PRIMARY KEY (`wishlistid`),
-  KEY `userid` (`userid`),
-  KEY `equipmentid` (`equipmentid`),
-  CONSTRAINT `wishlist_items_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`userid`),
-  CONSTRAINT `wishlist_items_ibfk_2` FOREIGN KEY (`equipmentid`) REFERENCES `equipments` (`equipmentid`)
+                                  `wishlistId` int NOT NULL AUTO_INCREMENT,
+                                  `userId` int NOT NULL,
+                                  `equipmentId` int NOT NULL,
+                                  PRIMARY KEY (`wishlistId`),
+                                  KEY `userId` (`userId`),
+                                  KEY `equipmentId` (`equipmentId`),
+                                  CONSTRAINT `wishlist_items_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`),
+                                  CONSTRAINT `wishlist_items_ibfk_2` FOREIGN KEY (`equipmentId`) REFERENCES `equipments` (`equipmentId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
