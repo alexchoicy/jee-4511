@@ -38,5 +38,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
 /src/main/java/com/cems/secret/DatabaseInfo.java
 /data.sql
+
+/src/main/webapp/WEB-INF/glassfish-web.xml
+nb-configuration.xml
