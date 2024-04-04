@@ -47,7 +47,6 @@
     <tr>
         <td><%= user.getUserId() %></td>
         <td><%= user.getUsername() %></td>
-        <td><%= user.getPassword() %></td>
         <td><%= user.getPhoneNumber() %></td>
         <td><%= user.getFirstName() %></td>
         <td><%= user.getLastName() %></td>

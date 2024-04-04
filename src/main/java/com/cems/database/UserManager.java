@@ -27,7 +27,6 @@ public class UserManager extends DatabaseManager {
                 Users user = new Users();
                 user.setUserId(resultSet.getInt("userId"));
                 user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
                 user.setPhoneNumber(resultSet.getString("phoneNumber"));
                 user.setFirstName(resultSet.getString("firstName"));
                 user.setLastName(resultSet.getString("lastName"));
@@ -58,7 +57,6 @@ public class UserManager extends DatabaseManager {
             if (resultSet.next()) {
                 user.setUserId(resultSet.getInt("userId"));
                 user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
                 user.setPhoneNumber(resultSet.getString("phoneNumber"));
                 user.setFirstName(resultSet.getString("firstName"));
                 user.setLastName(resultSet.getString("lastName"));
