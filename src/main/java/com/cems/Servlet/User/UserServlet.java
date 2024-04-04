@@ -23,8 +23,8 @@ public class UserServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        if (!AuthUtils.isLoggedin(request)) {
-            AuthUtils.rediectToLogin(request, response);
+        if (!AuthUtils.isLogged(request)) {
+            AuthUtils.redirectToLogin(request, response);
             return;
         }
 
