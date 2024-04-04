@@ -1,6 +1,7 @@
 package com.cems.Servlet.Auth;
 
 import com.cems.Model.Users;
+import com.cems.Utils.AuthUtils;
 import com.cems.database.UserManager;
 
 import javax.servlet.RequestDispatcher;
@@ -23,6 +24,10 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
+        if (AuthUtils.isLogged(request)) {
+            AuthUtils.redirectToIndex(request, response);
+            return;
+        }
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp");
         try {
             requestDispatcher.forward(request, response);
@@ -56,6 +61,8 @@ public class LoginServlet extends HttpServlet {
         session.setMaxInactiveInterval(60 * 60 * 24);
 
         System.out.println("User: " + user);
+
+        AuthUtils.redirectToIndex(request, response);
     }
 
 }
