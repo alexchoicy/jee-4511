@@ -19,6 +19,12 @@ public class IndexServlet extends HttpServlet {
             return;
         }
         try {
+
+
+
+
+
+
             request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
