@@ -18,12 +18,12 @@ public enum UserRoles {
         }
     }
 
-    public static UserRoles getRoles(int role) {
-        return map.get(role);
-    }
-
     UserRoles(int value) {
         this.value = value;
+    }
+
+    public static UserRoles getRoles(int role) {
+        return map.get(role);
     }
 
     public int getValue() {
