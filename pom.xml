@@ -42,6 +42,12 @@
           <artifactId>mysql-connector-j</artifactId>
           <version>8.0.33</version>
       </dependency>
+      <dependency>
+          <groupId>javax.servlet.jsp</groupId>
+          <artifactId>jsp-api</artifactId>
+          <version>2.2.1-b03</version>
+          <scope>provided</scope>
+      </dependency>
 
   </dependencies>
 

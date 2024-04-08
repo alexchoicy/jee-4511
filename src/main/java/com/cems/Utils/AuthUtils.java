@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AuthUtils {
     public static boolean isLogged(HttpServletRequest request) {
-        //false to avoid creating a new session
+        // false to avoid creating a new session
         return request.getSession(false) != null && request.getSession().getAttribute("user") != null;
     }
 
