@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserManager extends DatabaseManager {
+
     public ArrayList<Users> getUsers() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user";
@@ -29,7 +30,7 @@ public class UserManager extends DatabaseManager {
             connection.close();
             return users;
         } catch (Exception e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
         }
         return null;
@@ -50,10 +51,38 @@ public class UserManager extends DatabaseManager {
                 return user;
             }
         } catch (Exception e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean updateUserInfo(Users user) {
+        try (Connection connection = getConnection()) {
+            String checkSql = "SELECT COUNT(*) FROM users WHERE username = ?";
+            PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+            checkStatement.setString(1, user.getUsername());
+            ResultSet resultSet = checkStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return false;
+                }
+            }
+
+            String updateSql = "UPDATE users SET username = ?, first_name = ?, last_name = ?, password = ? WHERE user_id = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, user.getUsername());
+            updateStatement.setString(2, user.getFirstName());
+            updateStatement.setString(3, user.getLastName());
+            updateStatement.setString(4, user.getPassword());
+            updateStatement.setInt(5, user.getUserId());
+            int rowsAffected = updateStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private Users GetUserDataToBean(ResultSet resultSet) throws SQLException {
@@ -63,6 +92,7 @@ public class UserManager extends DatabaseManager {
         user.setPhoneNumber(resultSet.getString("phone_number"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
+        user.setPassword(resultSet.getString("password"));
         user.setRole(UserRoles.getRoles(resultSet.getInt("role")));
         return user;
     }

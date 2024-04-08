@@ -10,8 +10,17 @@ public class Users implements Serializable {
     private String phoneNumber;
     private String firstName;
     private String lastName;
+    private String password;
     private UserRoles role;
+    
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
     public int getUserId() {
         return userId;
     }
