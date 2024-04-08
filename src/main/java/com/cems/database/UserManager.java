@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class UserManager extends DatabaseManager {
+
     public ArrayList<Users> getUsers() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM users";
@@ -60,6 +61,7 @@ public class UserManager extends DatabaseManager {
                 user.setPhoneNumber(resultSet.getString("phoneNumber"));
                 user.setFirstName(resultSet.getString("firstName"));
                 user.setLastName(resultSet.getString("lastName"));
+                user.setPassword(resultSet.getString("password"));
                 user.setRole(UserRoles.getRoles(resultSet.getInt("role")));
             } else {
                 return null;
@@ -70,5 +72,34 @@ public class UserManager extends DatabaseManager {
             System.out.println("Error: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean updateUserInfo(Users user) {
+        try (Connection connection = getConnection()) {
+            String checkSql = "SELECT COUNT(*) FROM users WHERE username = ? AND userId != ?";
+            PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+            checkStatement.setString(1, user.getUsername());
+            checkStatement.setInt(2, user.getUserId());
+            ResultSet resultSet = checkStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return false;
+                }
+            }
+
+            String updateSql = "UPDATE users SET username = ?, firstName = ?, lastName = ?, password = ? WHERE userId = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
+            updateStatement.setString(1, user.getUsername());
+            updateStatement.setString(2, user.getFirstName());
+            updateStatement.setString(3, user.getLastName());
+            updateStatement.setString(4, user.getPassword());
+            updateStatement.setInt(5, user.getUserId());
+            int rowsAffected = updateStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
