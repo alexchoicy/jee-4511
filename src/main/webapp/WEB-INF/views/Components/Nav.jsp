@@ -24,7 +24,7 @@
             Username
           </button>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="information.html">Account information</a></li>
+            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/update-info">Account information</a></li>
             <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
         </div>

@@ -27,52 +27,22 @@
     </script>
 
     <body>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Rentai List</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="records.html">Recods</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="wishList.html">Wish List</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="booking.html">Booking</a>
-                        </li>
-                        <div class="btn-group dropstart position-absolute top-10 end-0" style="margin-right: 20px;">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                Username
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="information.html">Change information</a></li>
-                                <li><a class="dropdown-item" href="#">Logout</a></li>
-                            </ul>
-                        </div>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
+        <%@include file="../Components/Nav.jsp"%>
         <br>
 
         <div style="margin-left: 20px; margin-right: 20px;">
-            <h5>Personal information</h2>
+            <h5>Personal information</h5>
                 <h6>Manage your name and contact information. Personal information is private and will not be displayed to
-                    other users. View our privacy policy</h3>
+                    other users. View our privacy policy</h6>
 
                     <br>
 
                     <div id="content" style="height:200px;width:450px;float:left;">
+                        <% if (request.getAttribute("updateSuccess") != null) {%>
+                        <div class="alert alert-success" role="alert">
+                            <%= request.getAttribute("updateSuccess")%>
+                        </div>
+                        <% }%>
                         <% if (request.getAttribute("noOldPassword") != null) {%>
                         <div class="alert alert-danger" role="alert">
                             <%= request.getAttribute("noOldPassword")%>
@@ -102,7 +72,7 @@
                             <%= request.getAttribute("updateFailure")%>
                         </div>
                         <% }%>
-                        <form class="row g-3" onsubmit="return checkPassword(event)" method="post" action="${pageContext.request.contextPath}/information">
+                        <form class="row g-3" onsubmit="return checkPassword(event)" method="post" action="${pageContext.request.contextPath}/update-info">
                             <div class="col-12">
                                 <label for="inputId" class="form-label">ID</label>
                                 <input type="number" class="form-control" id="inputId" value="${user.userId}" readonly>
@@ -128,14 +98,14 @@
                                 <input type="password" class="form-control" id="inputPassword" name="inputPassword" oninput="togglePasswordAgain()">
                             </div>
                             <div class="col-12" id="inputPasswordAgainContainer" style="display: none">
-                                <label for="inputPasswordAgain" class="form-label">Please Input Password Again</label>
+                                <label for="newPassword" class="form-label">Please Input Password Again</label>
                                 <input type="password" class="form-control" id="newPassword" name="newPassword">
                             </div>
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-primary">Save changes</button>
                             </div>
                             <div class="col-md-6">
-                                <button type="reset" class="btn btn-primary">Reset</button>
+                                <button type="reset" class="btn btn-primary" onclick="return window.location.reload()">Reset</button>
                             </div>
                         </form>
                     </div>

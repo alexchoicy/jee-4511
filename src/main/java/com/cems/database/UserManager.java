@@ -59,9 +59,10 @@ public class UserManager extends DatabaseManager {
 
     public boolean updateUserInfo(Users user) {
         try (Connection connection = getConnection()) {
-            String checkSql = "SELECT COUNT(*) FROM users WHERE username = ?";
+            String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;";
             PreparedStatement checkStatement = connection.prepareStatement(checkSql);
             checkStatement.setString(1, user.getUsername());
+            checkStatement.setInt(2, user.getUserId());
             ResultSet resultSet = checkStatement.executeQuery();
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
@@ -70,7 +71,7 @@ public class UserManager extends DatabaseManager {
                 }
             }
 
-            String updateSql = "UPDATE users SET username = ?, first_name = ?, last_name = ?, password = ? WHERE user_id = ?";
+            String updateSql = "UPDATE user SET username = ?, first_name = ?, last_name = ?, password = ? WHERE user_id = ?";
             PreparedStatement updateStatement = connection.prepareStatement(updateSql);
             updateStatement.setString(1, user.getUsername());
             updateStatement.setString(2, user.getFirstName());
