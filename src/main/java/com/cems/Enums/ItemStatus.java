@@ -7,7 +7,6 @@ public enum ItemStatus {
     AVAILABLE(1, "Available"),
     IN_USE(2, "In Use"),
     UNDER_MAINTENANCE(3, "Under Maintenance");
-
     private final int value;
     private final String displayValue;
     private static final HashMap<Integer, ItemStatus> map = new HashMap<>();
