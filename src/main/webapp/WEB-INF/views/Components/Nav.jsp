@@ -1,4 +1,5 @@
 <%@ page import="com.cems.Enums.UserRoles" %>
+<%@ page import="com.cems.Model.Users" %>
 <%
   Users userBean = (Users) session.getAttribute("user");
 %>
