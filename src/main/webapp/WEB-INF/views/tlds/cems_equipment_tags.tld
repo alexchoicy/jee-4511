@@ -7,10 +7,22 @@
         <name>itemStatusOptions</name>
         <tag-class>com.cems.web.tags.ItemStatusOptionsTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <name>hasValue</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
     <tag>
         <name>locationOptions</name>
         <tag-class>com.cems.web.tags.LocationOptionsTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <name>hasValue</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
     </tag>
 </taglib>

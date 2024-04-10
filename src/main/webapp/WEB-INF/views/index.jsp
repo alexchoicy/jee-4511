@@ -49,7 +49,7 @@
             row += "<td>" + equipment_id + "</td>";
             row += "<td>" + equipment_name + "</td>";
             row += "<td>" + availableQuantity + "</td>";
-            row += "<td><a href=${pageContext.request.contextPath}/equipment/"+ equipment_id + ">Detail</a></td>";
+            row += "<td><a href=${pageContext.request.contextPath}/equipment/" + equipment_id + ">Detail</a></td>";
             tr.innerHTML = row;
             tbody.appendChild(tr);
         });
@@ -59,6 +59,28 @@
         fetchData();
     });
 
+
+    function removeEquipment(id) {
+        const url = '${pageContext.request.contextPath}/equipment/' + id;
+        fetch(url, {
+            method: 'DELETE',
+        }).then(response => {
+            return response.text();
+        }).then(data => {
+            console.log(data);
+        });
+    }
+
+    function removeItem(id, itemID) {
+        const url = '${pageContext.request.contextPath}/equipment/' + id + '/items/' + itemID;
+        fetch(url, {
+            method: 'DELETE',
+        }).then(response => {
+            return response.text();
+        }).then(data => {
+            console.log(data);
+        });
+    }
 
 </script>
 <body>
@@ -119,5 +141,9 @@
 <%
     }
 %>
+
+<button class="btn btn-danger mx-2" onclick="removeEquipment(2)">Remove</button>
+
+<button class="btn btn-danger mx-2" onclick="removeItem(1,1)">Remove</button>
 </body>
 </html>

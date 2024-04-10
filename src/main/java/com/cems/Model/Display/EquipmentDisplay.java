@@ -1,4 +1,7 @@
-package com.cems.Model;
+package com.cems.Model.Display;
+
+import com.cems.Model.Equipment;
+import com.cems.Model.EquipmentItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
