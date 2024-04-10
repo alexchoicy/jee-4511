@@ -1,4 +1,7 @@
-
+<%@ page import="com.cems.Enums.UserRoles" %>
+<%
+  Users userBean = (Users) session.getAttribute("user");
+%>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="${pageContext.request.contextPath}/">Rentai List</a>
@@ -19,6 +22,11 @@
         <li class="nav-item">
           <a class="nav-link" href="booking.html">Booking</a>
         </li>
+        <% if (userBean.getRole() == UserRoles.ADMIN) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="${pageContext.request.contextPath}/users">users</a>
+        </li>
+        <% } %>
         <div class="btn-group dropstart position-absolute top-10 end-0" style="margin-right: 20px;">
           <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             Username
