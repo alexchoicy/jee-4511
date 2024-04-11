@@ -9,6 +9,7 @@ import com.cems.Exceptions.ItemsInUseException;
 import com.cems.Model.*;
 import com.cems.Model.Display.EquipmentDisplay;
 import com.cems.Model.Request.CreateEquipmentItem;
+import com.cems.Model.Request.ReservationCart;
 import com.cems.Utils.ParseUtil;
 import com.cems.Utils.QueryBuilder;
 
@@ -357,4 +358,7 @@ public class EquipmentManager extends DatabaseManager {
             return false;
         }
     }
+
+//    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) {
+//    }
 }

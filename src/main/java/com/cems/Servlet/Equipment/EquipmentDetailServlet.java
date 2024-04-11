@@ -1,5 +1,6 @@
 package com.cems.Servlet.Equipment;
 
+import com.cems.Enums.UserRoles;
 import com.cems.Exceptions.EquipmentNotFoundException;
 import com.cems.Exceptions.HasItemsException;
 import com.cems.Exceptions.ItemNotFoundException;
@@ -8,12 +9,18 @@ import com.cems.Model.Display.EquipmentDisplay;
 import com.cems.Model.EquipmentItem;
 import com.cems.Model.Location;
 import com.cems.Model.Request.CreateEquipmentItem;
+import com.cems.Model.Request.ReservationCart;
+import com.cems.Model.Users;
 import com.cems.Utils.AuthUtils;
+import com.cems.Utils.CookieUtils;
 import com.cems.Utils.ParseUtil;
 import com.cems.database.EquipmentManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +34,7 @@ import java.util.stream.Collectors;
 @WebServlet(name = "equipmentDetailServlet", value = "/equipment/*")
 public class EquipmentDetailServlet extends HttpServlet {
     private EquipmentManager equipmentManager;
+    private Gson gson = new Gson();
 
     public void init() {
         equipmentManager = new EquipmentManager();
@@ -168,15 +176,61 @@ public class EquipmentDetailServlet extends HttpServlet {
             return;
         }
 
-        String items = pathParts[3];
-        int itemId;
-        try {
-            itemId = Integer.parseInt(items);
-        } catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        String action = pathParts[2];
+
+        switch (action) {
+            case "items" : {
+                String items = pathParts[3];
+                int itemId;
+                try {
+                    itemId = Integer.parseInt(items);
+                } catch (NumberFormatException e) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
+                break;
+            }
+            case "cart" : {
+//                boolean success = AddItemsToCart(request,response,equipmentId);
+            }
         }
+
+
+
+
+
+
     }
+
+
+//    private boolean AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) {
+//        Users user = (Users) request.getSession().getAttribute("user");
+//        UserRoles role = user.getRole();
+//        int quantity = ParseUtil.tryParseInt(request.getParameter("quantity"), 0);
+//        String value = CookieUtils.getCookie(request, "reservationCart");
+//        ArrayList<ReservationCart> cart;
+//        if (value == null) {
+//            cart = new ArrayList<>();
+//        } else {
+//            cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>(){}.getType());
+//        }
+//
+//        ReservationCart item = equipmentManager.addItemsToCart(role, equipmentId, quantity);
+//        if(item == null) {
+//            //failed
+//            return false;
+//        }
+//
+//        cart.add(item);
+//        String toJson = gson.toJson(cart);
+//
+//        Cookie itemCartCookie = new Cookie("reservationCart", toJson);
+//        itemCartCookie.setMaxAge(60*60*24);
+//        response.addCookie(itemCartCookie);
+//        return true;
+//    }
+
+
+
 
     private ArrayList<CreateEquipmentItem> CreateNewItems(HttpServletRequest request, HttpServletResponse response, int equipmentId, int numberOfNewItems) {
         ArrayList<CreateEquipmentItem> newItems = new ArrayList<>();
