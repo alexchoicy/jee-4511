@@ -64,7 +64,7 @@
                         <td><%= cartItem.getEquipmentName()%></td>
                         <td><%= cartItem.getQuantity()%></td>
                         <td>
-                            <button onclick="removeItemFromCart('${pageContext.request.contextPath}/equipment/<%= cartItem.getEquipmentID()%>/cart')">
+                            <button onclick="removeItemFromCart('${pageContext.request.contextPath}/equipment/<%= cartItem.getEquipmentID()%>/cart')" class="btn btn-danger">
                                 Remove
                             </button>
                         </td>
@@ -72,6 +72,12 @@
             <% } }%>
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary">
+                Create Reservation
+            </button>
+        </div>
 
     </div>
 </body>
