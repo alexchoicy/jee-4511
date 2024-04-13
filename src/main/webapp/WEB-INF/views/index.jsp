@@ -82,12 +82,13 @@
         </button>
     </form>
 </div>
-
-<div class="d-flex justify-content-end m-2">
-    <button class="btn btn-primary" onclick="return window.location.href='${pageContext.request.contextPath}/equipment/create'">
-        Create New Item
-    </button>
-</div>
+<% if (userBean.getRole().equals(UserRoles.ADMIN)) { %>
+    <div class="d-flex justify-content-end m-2">
+        <button class="btn btn-primary" onclick="return window.location.href='${pageContext.request.contextPath}/equipment/create'">
+            Create New Item
+        </button>
+    </div>
+<% } %>
 
 <div class="mx-2">
     <table class="table table-striped table-hover text-center" style="table-layout: fixed; width: 100%">
