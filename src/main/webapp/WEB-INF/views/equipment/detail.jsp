@@ -282,8 +282,8 @@
                                 <img
                                         src="${pageContext.request.contextPath}/resources/images/buttons/minus-solid.svg"
                                         alt=""
-                                        width="20px "
-                                        height="20px"
+             `                           width="20px "
+                                        height="20px"`
                                 />
                             </button>
                             <input
