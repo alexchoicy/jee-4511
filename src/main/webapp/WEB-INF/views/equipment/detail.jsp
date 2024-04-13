@@ -40,11 +40,13 @@
     }
 
     <% if (user.getRole() == UserRoles.ADMIN) { %>
+
     function onSearchSubmit(event) {
         event.preventDefault();
         const searchText = document.getElementById("searchText").value;
         fetchItemDetail(searchText);
     }
+
     function removeItem(id, itemID) {
         const url = '${pageContext.request.contextPath}/equipment/' + id + '/items/' + itemID;
         fetch(url, {
@@ -57,7 +59,7 @@
             }
             return response.text();
         }).then(data => {
-            alert("Item id "+ itemID + " removed");
+            alert("Item id " + itemID + " removed");
             window.location.href = '${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>';
             console.log(data);
         }).catch((error) => {
@@ -65,6 +67,7 @@
             alert(error.message);
         });
     }
+
     function fetchItemDetail(serach) {
         document.querySelector("tbody").innerHTML = "";
         fetch("${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>?search=" + serach)
@@ -85,7 +88,7 @@
                         "<td>" + borrowedTimes + "</td>" +
                         "<td>" + location.name + "</td>" +
                         <%--"<td> <button data-item-id='"+ id + "' onclick='removeItem("+<%= equipment.getId()%> + "," + id +")' class='btn btn-danger'>Remove Items</button></td>"--%>
-                        "<td> <button data-item-id='"+ id + "' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#RemoveItemModal' >Remove Items</button></td>"
+                        "<td> <button data-item-id='" + id + "' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#RemoveItemModal' >Remove Items</button></td>"
                     ;
                     document.querySelector("tbody").appendChild(row);
                 });
@@ -115,15 +118,42 @@
         })
 
 
-
     });
-<% } %>
+    <% } %>
+
     function addToReservationCart(event) {
         event.preventDefault();
+
+
+        const quantity = document.getElementById('quantity').value;
+
+        const params = new URLSearchParams();
+        params.append('quantity', quantity);
+
+
+        fetch("${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>/cart", {
+                method: "POST",
+            body: params
+            }).then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response.text();
+        }).then(data => {
+            console.log(data);
+            alert("Item Added");
+        }).catch((error) => {
+            console.error('Error:', error);
+            alert(error.message);
+        });
     }
+
     function goToEditMode() {
         window.location.href = "${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>/edit";
     }
+
     function removeEquipment(id) {
         const url = '${pageContext.request.contextPath}/equipment/' + id;
         fetch(url, {
@@ -230,15 +260,15 @@
             <hr/>
             <div class="row mb-4 justify-content-center">
                 <form onsubmit="return addToReservationCart(event)">
-                    <% if(!equipment.isListed()) { %>
+                    <% if (!equipment.isListed()) { %>
                     <div class="alert alert-danger" role="alert">
                         This equipment is not available for reservation
                     </div>
-                    <% } else if(equipment.isStaffOnly() && user.getRole() == UserRoles.USER ) {%>
+                    <% } else if (equipment.isStaffOnly() && user.getRole() == UserRoles.USER) {%>
                     <div class="alert alert-danger" role="alert">
                         This equipment is only available for staff
                     </div>
-                <% } else { %>
+                    <% } else { %>
                     <div class="col">
                         <label rel="quantity" class="mb-2 d-block">Quantity</label>
                         <div class="input-group mb-3" style="width: 170px">
@@ -285,7 +315,7 @@
                                 The Max avaiable is 2
                             </div>
                         </div>
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" type="submit">
                             Add to Reservation List
                         </button>
                         <% } %>
@@ -327,7 +357,7 @@
                 </tbody>
             </table>
         </div>
-          <%  } %>
+        <% } %>
     </div>
 </div>
 
@@ -345,7 +375,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" onclick="removeEquipment(<%= equipment.getId()%>)">Confirm</button>
+                <button type="button" class="btn btn-danger" onclick="removeEquipment(<%= equipment.getId()%>)">
+                    Confirm
+                </button>
             </div>
         </div>
     </div>

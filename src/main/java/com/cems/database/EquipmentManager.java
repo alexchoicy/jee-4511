@@ -2,10 +2,7 @@ package com.cems.database;
 
 import com.cems.Enums.ItemStatus;
 import com.cems.Enums.UserRoles;
-import com.cems.Exceptions.EquipmentNotFoundException;
-import com.cems.Exceptions.HasItemsException;
-import com.cems.Exceptions.ItemNotFoundException;
-import com.cems.Exceptions.ItemsInUseException;
+import com.cems.Exceptions.*;
 import com.cems.Model.*;
 import com.cems.Model.Display.EquipmentDisplay;
 import com.cems.Model.Request.CreateEquipmentItem;
@@ -22,8 +19,8 @@ import java.util.Set;
 public class EquipmentManager extends DatabaseManager {
 
     public PagedResult<ArrayList<Equipment>> getEquipmentList(int userId, UserRoles roles, String searchText,
-            int locationId, boolean showWishlistOnly, boolean showStaffOnly, boolean isListed,
-            boolean showAvailableOnly, int page, int pageSize) {
+                                                              int locationId, boolean showWishlistOnly, boolean showStaffOnly, boolean isListed,
+                                                              boolean showAvailableOnly, int page, int pageSize) {
         PagedResult<ArrayList<Equipment>> result = new PagedResult<>();
         int offset = (page - 1) * pageSize;
 
@@ -143,7 +140,7 @@ public class EquipmentManager extends DatabaseManager {
     public EquipmentDisplay getEquipmentDetail(int equipmentId) {
         String sql = "SELECT * FROM equipment LEFT JOIN equipment_item ON equipment.equipment_id = equipment_item.equipment_id LEFT JOIN location ON equipment_item.current_location = location.location_id WHERE equipment.equipment_id = ?";
         try (Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, equipmentId);
 
             EquipmentDisplay equipmentDisplay = new EquipmentDisplay();
@@ -198,7 +195,7 @@ public class EquipmentManager extends DatabaseManager {
         ArrayList<EquipmentItem> items = new ArrayList<>();
         String sql = "SELECT * FROM equipment_item INNER JOIN location ON equipment_item.current_location = location.location_id WHERE equipment_id = ? AND serial_number LIKE ? OR equipment_item_id = ? ORDER BY equipment_item_id DESC";
         try (Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, equipmentID);
             statement.setString(2, "%" + searchText + "%");
             statement.setInt(3, ParseUtil.tryParseInt(searchText, 0));
@@ -359,6 +356,27 @@ public class EquipmentManager extends DatabaseManager {
         }
     }
 
-//    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) {
-//    }
+    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
+        String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN `4511`.equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
+                " where equipment.equipment_id = ? GROUP BY equipment.equipment_id";
+        ReservationCart cartItem = null;
+
+        Connection connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, equipmentId);
+        try (ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                boolean isStaffOnly = resultSet.getBoolean("isStaffOnly");
+                if (role.equals(UserRoles.USER) && isStaffOnly) {
+                    throw new StaffOnlyException(equipmentId);
+                }
+                cartItem = ReservationCart.create(resultSet, quantity);
+
+                if (resultSet.getInt("available_quantity") < quantity) {
+                    throw new NotEnoughItemException(equipmentId, cartItem.getQuantity(), quantity);
+                }
+            }
+            return cartItem;
+        }
+    }
 }

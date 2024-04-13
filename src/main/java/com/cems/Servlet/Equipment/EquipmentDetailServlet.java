@@ -1,10 +1,7 @@
 package com.cems.Servlet.Equipment;
 
 import com.cems.Enums.UserRoles;
-import com.cems.Exceptions.EquipmentNotFoundException;
-import com.cems.Exceptions.HasItemsException;
-import com.cems.Exceptions.ItemNotFoundException;
-import com.cems.Exceptions.ItemsInUseException;
+import com.cems.Exceptions.*;
 import com.cems.Model.Display.EquipmentDisplay;
 import com.cems.Model.EquipmentItem;
 import com.cems.Model.Location;
@@ -190,7 +187,8 @@ public class EquipmentDetailServlet extends HttpServlet {
                 break;
             }
             case "cart" : {
-//                boolean success = AddItemsToCart(request,response,equipmentId);
+                AddItemsToCart(request,response,equipmentId);
+                return;
             }
         }
 
@@ -202,32 +200,44 @@ public class EquipmentDetailServlet extends HttpServlet {
     }
 
 
-//    private boolean AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) {
-//        Users user = (Users) request.getSession().getAttribute("user");
-//        UserRoles role = user.getRole();
-//        int quantity = ParseUtil.tryParseInt(request.getParameter("quantity"), 0);
-//        String value = CookieUtils.getCookie(request, "reservationCart");
-//        ArrayList<ReservationCart> cart;
-//        if (value == null) {
-//            cart = new ArrayList<>();
-//        } else {
-//            cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>(){}.getType());
-//        }
-//
-//        ReservationCart item = equipmentManager.addItemsToCart(role, equipmentId, quantity);
-//        if(item == null) {
-//            //failed
-//            return false;
-//        }
-//
-//        cart.add(item);
-//        String toJson = gson.toJson(cart);
-//
-//        Cookie itemCartCookie = new Cookie("reservationCart", toJson);
-//        itemCartCookie.setMaxAge(60*60*24);
-//        response.addCookie(itemCartCookie);
-//        return true;
-//    }
+    private void AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws ServletException, IOException {
+        Users user = (Users) request.getSession().getAttribute("user");
+        UserRoles role = user.getRole();
+        int quantity = ParseUtil.tryParseInt(request.getParameter("quantity"), 0);
+        if (quantity == 0) {
+            response.setContentType("text/plain");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Invalid request quantity");
+            return;
+        }
+        String value = CookieUtils.getCookie(request, "reservationCart");
+        ArrayList<ReservationCart> cart;
+        if (value == null) {
+            cart = new ArrayList<>();
+        } else {
+            cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>(){}.getType());
+            cart.removeIf(cartItem -> cartItem.getEquipmentID() == equipmentId);
+        }
+        try {
+            ReservationCart item = equipmentManager.addItemsToCart(role, equipmentId, quantity);
+            cart.add(item);
+            String toJson = gson.toJson(cart);
+            Cookie itemCartCookie = new Cookie("reservationCart", toJson);
+            itemCartCookie.setMaxAge(60*60*24);
+            response.addCookie(itemCartCookie);
+            response.setContentType("text/plain");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write("OK");
+        } catch (StaffOnlyException | NotEnoughItemException e) {
+            response.setContentType("text/plain");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(e.getMessage());
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 

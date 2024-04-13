@@ -1,6 +1,7 @@
 package com.cems.Model.Request;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 
 public class ReservationCart implements Serializable {
     private int equipmentID;
@@ -29,5 +30,17 @@ public class ReservationCart implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public static ReservationCart create(ResultSet resultSet, int quantity) {
+        ReservationCart reservationCart = new ReservationCart();
+        try {
+            reservationCart.setEquipmentID(resultSet.getInt("equipment_id"));
+            reservationCart.setEquipmentName(resultSet.getString("equipment_name"));
+            reservationCart.setQuantity(quantity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reservationCart;
     }
 }
