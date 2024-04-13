@@ -116,8 +116,6 @@
             const title = removeItemModal.querySelector(".modal-title");
             title.innerHTML = "Remove Item ID : " + itemID;
         })
-
-
     });
     <% } %>
 

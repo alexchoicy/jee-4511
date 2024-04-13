@@ -356,7 +356,29 @@ public class EquipmentManager extends DatabaseManager {
         }
     }
 
-    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
+
+    public Equipment CreateEquipment(Equipment equipment) {
+        String sql = "INSERT INTO equipment (equipment_name, description, isStaffOnly, isListed, image_path) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, equipment.getName());
+            statement.setString(2, equipment.getDescription());
+            statement.setBoolean(3, equipment.isStaffOnly());
+            statement.setBoolean(4, equipment.isListed());
+            statement.setString(5, equipment.getImagePath());
+            statement.executeUpdate();
+            try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    equipment.setId(resultSet.getInt(1));
+                    return equipment;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+  public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
         String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN `4511`.equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
                 " where equipment.equipment_id = ? GROUP BY equipment.equipment_id";
         ReservationCart cartItem = null;
