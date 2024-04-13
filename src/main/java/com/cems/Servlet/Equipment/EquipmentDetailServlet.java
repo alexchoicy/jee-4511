@@ -105,16 +105,28 @@ public class EquipmentDetailServlet extends HttpServlet {
             DeleteEquipment(request, response, equipmentId);
             return;
         }
-        String items = pathParts[3];
-        int itemId;
-        try {
-            itemId = Integer.parseInt(items);
-        } catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        String action = pathParts[2];
+
+        switch (action) {
+            case "items": {
+                String items = pathParts[3];
+                int itemId;
+                try {
+                    itemId = Integer.parseInt(items);
+                } catch (NumberFormatException e) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+                deleteEquipmentItem(request, response, equipmentId, itemId);
+                break;
+            }
+            case "cart": {
+                RemoveItemFromCart(request, response, equipmentId);
+                return;
+            }
         }
 
-        deleteEquipmentItem(request, response, equipmentId, itemId);
+
     }
 
     @Override
@@ -176,7 +188,7 @@ public class EquipmentDetailServlet extends HttpServlet {
         String action = pathParts[2];
 
         switch (action) {
-            case "items" : {
+            case "items": {
                 String items = pathParts[3];
                 int itemId;
                 try {
@@ -186,17 +198,28 @@ public class EquipmentDetailServlet extends HttpServlet {
                 }
                 break;
             }
-            case "cart" : {
-                AddItemsToCart(request,response,equipmentId);
+            case "cart": {
+                AddItemsToCart(request, response, equipmentId);
                 return;
             }
         }
+    }
 
+    private void RemoveItemFromCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws IOException {
+        String value = CookieUtils.getCookie(request, "reservationCart");
+        ArrayList<ReservationCart> cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>() {
+        }.getType());
 
+        cart.removeIf(cartItem -> cartItem.getEquipmentID() == equipmentId);
 
-
-
-
+        String toJson = gson.toJson(cart);
+        Cookie itemCartCookie = new Cookie("reservationCart", toJson);
+        itemCartCookie.setMaxAge(60 * 60 * 24);
+        itemCartCookie.setPath(request.getContextPath());
+        response.addCookie(itemCartCookie);
+        response.setContentType("text/plain");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write("OK");
     }
 
 
@@ -215,7 +238,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         if (value == null) {
             cart = new ArrayList<>();
         } else {
-            cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>(){}.getType());
+            cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>() {
+            }.getType());
             cart.removeIf(cartItem -> cartItem.getEquipmentID() == equipmentId);
         }
         try {
@@ -223,7 +247,9 @@ public class EquipmentDetailServlet extends HttpServlet {
             cart.add(item);
             String toJson = gson.toJson(cart);
             Cookie itemCartCookie = new Cookie("reservationCart", toJson);
-            itemCartCookie.setMaxAge(60*60*24);
+            itemCartCookie.setMaxAge(60 * 60 * 24);
+            itemCartCookie.setPath(request.getContextPath());
+
             response.addCookie(itemCartCookie);
             response.setContentType("text/plain");
             response.setStatus(HttpServletResponse.SC_OK);
@@ -238,8 +264,6 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
 
     }
-
-
 
 
     private ArrayList<CreateEquipmentItem> CreateNewItems(HttpServletRequest request, HttpServletResponse response, int equipmentId, int numberOfNewItems) {
