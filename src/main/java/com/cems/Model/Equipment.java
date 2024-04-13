@@ -11,6 +11,19 @@ public class Equipment implements Serializable {
     private boolean isStaffOnly;
     private boolean isListed;
     private boolean isWishListed;
+
+    public Equipment() {
+
+    }
+
+    public Equipment(String name, String description, String imagePath,  boolean isStaffOnly, boolean isListed) {
+        this.name = name;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.isStaffOnly = isStaffOnly;
+        this.isListed = isListed;
+    }
+
     public boolean isListed() {
         return isListed;
     }
