@@ -6,6 +6,7 @@ import com.cems.Exceptions.HasItemsException;
 import com.cems.Exceptions.ItemNotFoundException;
 import com.cems.Exceptions.ItemsInUseException;
 import com.cems.Model.Display.EquipmentDisplay;
+import com.cems.Model.Equipment;
 import com.cems.Model.EquipmentItem;
 import com.cems.Model.Location;
 import com.cems.Model.Request.CreateEquipmentItem;
@@ -55,6 +56,16 @@ public class EquipmentDetailServlet extends HttpServlet {
             System.out.println(part);
         }
         String value = pathParts[1];
+
+        if (value.equals("create")) {
+            try {
+                request.getRequestDispatcher("/WEB-INF/views/equipment/create.jsp").forward(request, response);
+            } catch (ServletException | IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         int equipmentId;
         try {
             equipmentId = Integer.parseInt(value);
@@ -126,7 +137,9 @@ public class EquipmentDetailServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-        ;
+
+        //magic code
+        //my magical fake form data suddenly work back with this
         Map<String, String[]> paramMap = request.getParameterMap();
 
         for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
@@ -140,6 +153,12 @@ public class EquipmentDetailServlet extends HttpServlet {
             System.out.println(i + ": " + pathParts[i]);
         }
         String value = pathParts[1];
+
+        if (value.equals("create")) {
+            CreateEquipment(request, response);
+            return;
+        }
+
         int equipmentId;
         try {
             equipmentId = Integer.parseInt(value);
@@ -231,6 +250,49 @@ public class EquipmentDetailServlet extends HttpServlet {
 
 
 
+    private void CreateEquipment(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println("Create Equipment");
+        String name = request.getParameter("itemName");
+        String description = request.getParameter("itemDescription");
+
+        System.out.println("name: " + name + " description: " + description);
+        if (name == null || name.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        description = description == null ? "" : description;
+
+        String isStaffOnlyString = request.getParameter("isStaffOnly");
+        boolean isStaffOnly = isStaffOnlyString != null && isStaffOnlyString.equals("on");
+
+        String isListedString = request.getParameter("isListed");
+        boolean isListed = isListedString != null && isListedString.equals("on");
+
+        Equipment equipment = new Equipment(name, description, "resources/images/equipments/awaitUpload.png",isStaffOnly, isListed);
+        equipment = equipmentManager.CreateEquipment(equipment);
+
+        if (equipment == null) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            request.setAttribute("error", "Error creating equipment");
+            request.getRequestDispatcher("/WEB-INF/views/equipment/ErrorCreate.jsp").forward(request, response);
+            return;
+        }
+
+        int numberOfNewItems = ParseUtil.tryParseInt(request.getParameter("numberOfNewItems"), 0);
+        System.out.println("numberOfNewItems: " + numberOfNewItems);
+
+        if (numberOfNewItems > 0) {
+            ArrayList<CreateEquipmentItem> errorItems = CreateNewItems(request, response, equipment.getId(), numberOfNewItems);
+            if (!errorItems.isEmpty()) {
+                request.setAttribute("errorItems", errorItems);
+                request.getRequestDispatcher("/WEB-INF/views/equipment/ErrorCreate.jsp").forward(request, response);
+                return;
+            }
+        }
+
+        response.sendRedirect(request.getContextPath() + "/equipment/" + equipment.getId());
+    }
 
     private ArrayList<CreateEquipmentItem> CreateNewItems(HttpServletRequest request, HttpServletResponse response, int equipmentId, int numberOfNewItems) {
         ArrayList<CreateEquipmentItem> newItems = new ArrayList<>();
@@ -253,6 +315,7 @@ public class EquipmentDetailServlet extends HttpServlet {
 
     private boolean EditEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws IOException {
         String name = request.getParameter("itemName");
+        System.out.println("name: " + name);
         String description = request.getParameter("itemDescription");
 
         if (name == null || name.isEmpty()) {

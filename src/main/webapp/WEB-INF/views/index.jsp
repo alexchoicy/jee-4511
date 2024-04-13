@@ -58,30 +58,6 @@
     document.addEventListener("DOMContentLoaded", () => {
         fetchData();
     });
-
-
-    function removeEquipment(id) {
-        const url = '${pageContext.request.contextPath}/equipment/' + id;
-        fetch(url, {
-            method: 'DELETE',
-        }).then(response => {
-            return response.text();
-        }).then(data => {
-            console.log(data);
-        });
-    }
-
-    function removeItem(id, itemID) {
-        const url = '${pageContext.request.contextPath}/equipment/' + id + '/items/' + itemID;
-        fetch(url, {
-            method: 'DELETE',
-        }).then(response => {
-            return response.text();
-        }).then(data => {
-            console.log(data);
-        });
-    }
-
 </script>
 <body>
 <%@include file="Components/Nav.jsp" %>
@@ -106,6 +82,13 @@
         </button>
     </form>
 </div>
+
+<div class="d-flex justify-content-end m-2">
+    <button class="btn btn-primary" onclick="return window.location.href='${pageContext.request.contextPath}/equipment/create'">
+        Create New Item
+    </button>
+</div>
+
 <div class="mx-2">
     <table class="table table-striped table-hover text-center" style="table-layout: fixed; width: 100%">
         <thead>
@@ -121,29 +104,5 @@
     </table>
 </div>
 
-<%
-    Users user = (Users) session.getAttribute("user");
-    if (user != null) {
-%>
-<h2>User Details</h2>
-<p>User ID: <%= user.getUserId() %>
-</p>
-<p>Username: <%= user.getUsername() %>
-</p>
-<p>Phone Number: <%= user.getPhoneNumber() %>
-</p>
-<p>First Name: <%= user.getFirstName() %>
-</p>
-<p>Last Name: <%= user.getLastName() %>
-</p>
-<p>Role: <%= user.getRole() %>
-</p>
-<%
-    }
-%>
-
-<button class="btn btn-danger mx-2" onclick="removeEquipment(2)">Remove</button>
-
-<button class="btn btn-danger mx-2" onclick="removeItem(1,1)">Remove</button>
 </body>
 </html>
