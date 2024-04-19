@@ -34,7 +34,7 @@ public class LocationOptionsTag extends SimpleTagSupport {
                 }
 
                 options.setLength(options.length() - 2);
-            } else {            options.append("<option value=\"\">Select Status</option>");
+            } else {            options.append("<option value=\"\">Select Location</option>");
 
                 for (Location location : locations) {
                     options.append("<option value=\"").append(location.getId()).append("\">").append(location.getName()).append("</option>");
