@@ -92,5 +92,21 @@
     </div>
 <% } %>
 
+                <div class="mx-2">
+                    <table class="table table-striped table-hover text-center" style="table-layout: fixed; width: 100%">
+                        <thead>
+                            <th scope="col">Staff Only</th>
+                            <th scope="col">Wish Listed</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Available Quantity</th>
+                            <th scope="col">Detail</th>
+                        </thead>
+                        <tbody id="body">
+                        </tbody>
+                    </table>
+                </div>
+
         </body>
+
         </html>
