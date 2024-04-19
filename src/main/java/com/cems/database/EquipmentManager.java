@@ -26,8 +26,8 @@ public class EquipmentManager extends DatabaseManager {
 
         QueryBuilder searchQuery = new QueryBuilder();
         QueryBuilder countQuery = new QueryBuilder();
+        String availableQuantityQuery = "SELECT COALESCE(COUNT(equipment_id), 0) as available_quantity FROM equipment_item WHERE status = ? AND equipment_id = ?";
         searchQuery.select("e.*");
-        searchQuery.select("COALESCE(COUNT(i.equipment_id), 0) as available_quantity");
         searchQuery.select("CASE WHEN w.wishlist_id IS NOT NULL THEN TRUE ELSE FALSE END as isWishlisted");
         searchQuery.from("equipment e LEFT JOIN equipment_item i ON e.equipment_id = i.equipment_id " +
                 "LEFT JOIN wishlist_items w ON e.equipment_id = w.equipment_id AND w.user_id = ?");
@@ -71,7 +71,6 @@ public class EquipmentManager extends DatabaseManager {
         try (Connection connection = getConnection()) {
             PreparedStatement countStatement = connection.prepareStatement(countQuery.build());
             PreparedStatement searchStatement = connection.prepareStatement(searchQuery.build());
-
             int index = 1;
             int countIndex = 1;
 
@@ -108,8 +107,6 @@ public class EquipmentManager extends DatabaseManager {
             searchStatement.setInt(index++, pageSize);
             searchStatement.setInt(index++, offset);
 
-            System.out.println(searchStatement.toString());
-            System.out.println(countStatement.toString());
 
             try (ResultSet countResultSet = countStatement.executeQuery()) {
                 if (countResultSet.next()) {
@@ -123,8 +120,19 @@ public class EquipmentManager extends DatabaseManager {
 
             try (ResultSet resultSet = searchStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    Equipment item = GetEquipmentDataToBean(resultSet);
+                    Equipment item = getEquipmentDataToBean(resultSet);
                     data.add(item);
+                }
+            }
+
+            for (Equipment item : data) {
+                PreparedStatement availableQuantityStatement = connection.prepareStatement(availableQuantityQuery);
+                availableQuantityStatement.setInt(1, ItemStatus.AVAILABLE.getValue());
+                availableQuantityStatement.setInt(2, item.getId());
+                try (ResultSet resultSet = availableQuantityStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        item.setAvailableQuantity(resultSet.getInt("available_quantity"));
+                    }
                 }
             }
 
@@ -221,13 +229,12 @@ public class EquipmentManager extends DatabaseManager {
         return items;
     }
 
-    private Equipment GetEquipmentDataToBean(ResultSet resultSet) {
+    public static Equipment getEquipmentDataToBean(ResultSet resultSet) {
         Equipment item = new Equipment();
         try {
             item.setId(resultSet.getInt("equipment_id"));
             item.setName(resultSet.getString("equipment_name"));
             item.setDescription(resultSet.getString("description"));
-            item.setAvailableQuantity(resultSet.getInt("available_quantity"));
             item.setStaffOnly(resultSet.getBoolean("isStaffOnly"));
             item.setListed(resultSet.getBoolean("isListed"));
             item.setImagePath(resultSet.getString("image_path"));

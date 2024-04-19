@@ -1,6 +1,5 @@
 package com.cems.Servlet.Equipment;
 
-import com.cems.Enums.UserRoles;
 import com.cems.Model.Equipment;
 import com.cems.Model.PagedResult;
 import com.cems.Model.Users;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 @WebServlet(name = "EquipmentServlet", value = "/equipment")
@@ -45,8 +43,8 @@ public class EquipmentServlet extends HttpServlet {
         int page = ParseUtil.tryParseInt(request.getParameter("page"), 1);
         int pageSize = ParseUtil.tryParseInt(request.getParameter("pageSize"), 15);
 
-
-        PagedResult<ArrayList<Equipment>> equipmentList = equipmentManager.getEquipmentList(userId, user.getRole(), searchText, locationId, showWishlistOnly, showStaffOnly, isListed, showAvailableOnly, page, pageSize);
+        PagedResult<ArrayList<Equipment>> equipmentList = equipmentManager.getEquipmentList(userId, user.getRole(),
+                searchText, locationId, showWishlistOnly, showStaffOnly, isListed, showAvailableOnly, page, pageSize);
         StringBuilder jsonBuilder = new StringBuilder();
         jsonBuilder.append("{");
         jsonBuilder.append("\"total\":").append(equipmentList.getTotal()).append(",");
@@ -72,7 +70,6 @@ public class EquipmentServlet extends HttpServlet {
                 jsonBuilder.append(",");
             }
         }
-
 
         jsonBuilder.append("]");
         jsonBuilder.append("}");
