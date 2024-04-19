@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @WebServlet(name = "ReservationCart", value = "/cart")
-public class ReservationCart extends HttpServlet {
+public class ReservationCartView extends HttpServlet {
     private Gson gson = new Gson();
 
     @Override

@@ -9,6 +9,7 @@ public class EquipmentItem implements Serializable {
     private String serialNumber;
     private int borrowedTimes;
     private boolean isStaffOnly;
+    private boolean isListed;
     private ItemStatus status;
     private int equipmentId;
     private Location location;
@@ -19,6 +20,14 @@ public class EquipmentItem implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isListed() {
+        return isListed;
+    }
+
+    public void setListed(boolean listed) {
+        isListed = listed;
     }
 
     public String getSerialNumber() {
