@@ -2,13 +2,12 @@ package com.cems.Utils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 public class CookieUtils {
 
     public static String getCookie(HttpServletRequest request, String key) {
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies){
+        for (Cookie cookie : cookies) {
             if (cookie.getName().equals(key)) {
                 return cookie.getValue();
             }
