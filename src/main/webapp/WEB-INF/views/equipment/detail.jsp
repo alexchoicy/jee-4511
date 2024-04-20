@@ -16,14 +16,13 @@
 
 
 </head>
-<%
-    EquipmentDisplay display = (EquipmentDisplay) request.getAttribute("equipmentDisplay");
+<% EquipmentDisplay display = (EquipmentDisplay) request.getAttribute("equipmentDisplay");
     ArrayList<EquipmentItem> item = display.getItems();
     Equipment equipment = display.getEquipment();
     Users user = (Users) request.getSession().getAttribute("user");
 %>
 <script>
-    const maxQuantity = <%= equipment.getAvailableQuantity()%>;
+    const maxQuantity = <%= equipment.getAvailableQuantity() %>;
 
     function addQuantity(number) {
         const quantity = document.getElementById("quantity");
@@ -87,7 +86,6 @@
                         "<td>" + status + "</td>" +
                         "<td>" + borrowedTimes + "</td>" +
                         "<td>" + location.name + "</td>" +
-                        <%--"<td> <button data-item-id='"+ id + "' onclick='removeItem("+<%= equipment.getId()%> + "," + id +")' class='btn btn-danger'>Remove Items</button></td>"--%>
                         "<td> <button data-item-id='" + id + "' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#RemoveItemModal' >Remove Items</button></td>"
                     ;
                     document.querySelector("tbody").appendChild(row);
@@ -106,7 +104,7 @@
             const confirmBtn = document.getElementById("RemoveItemModalConfirmBtn");
 
             confirmBtn.addEventListener('click', () => {
-                removeItem(<%= equipment.getId()%>, itemID);
+                removeItem(<%= equipment.getId() %>, itemID);
             });
 
             const body = removeItemModal.querySelector(".modal-body");
@@ -130,9 +128,9 @@
 
 
         fetch("${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>/cart", {
-                method: "POST",
+            method: "POST",
             body: params
-            }).then(response => {
+        }).then(response => {
             if (!response.ok) {
                 return response.text().then(text => {
                     throw new Error(text);
@@ -173,23 +171,20 @@
     }
 </script>
 
-<body>
+<body class="bg-light">
 <%@include file="../Components/Nav.jsp" %>
 
 <div class="col pb-2 px-3">
     <div
-            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom"
-    >
+            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom">
         <h2 class="h2">Equipment Detail</h2>
         <div class="btn-toolbar mb-2 mb-md-0">
             <% if (user.getRole() == UserRoles.ADMIN) { %>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#RemoveModal">
+            <button type="button" class="btn btn-danger mx-2"
+                    data-bs-toggle="modal" data-bs-target="#RemoveModal">
                 Remove
             </button>
-            <button
-                    class="btn btn-primary"
-                    onclick="goToEditMode()"
-            >
+            <button class="btn btn-primary" onclick="goToEditMode()">
                 Edit
             </button>
             <% } %>
@@ -198,28 +193,27 @@
     <div class="row gx-6">
         <div class="col-lg-6">
             <div class="d-flex justify-content-center">
-                <img
-                        src="${pageContext.request.contextPath}/<%= equipment.getImagePath()%>"
-                        class="img-thumbnail object-fit-cover"
-                        width="600px"
-                        height="600px"
-                        alt=""
-                />
+                <img src="${pageContext.request.contextPath}/<%= equipment.getImagePath()%>"
+                     class="img-thumbnail object-fit-cover" width="600px"
+                     height="600px" alt=""/>
             </div>
         </div>
         <div class="col-lg-6">
-            <h4 class="h4 text-dark"><%=equipment.getName()%>
+            <h4 class="h4 text-dark">
+                <%=equipment.getName()%>
             </h4>
             <hr/>
             <div class="row my-3">
                 <div class="h3 col-lg-6">Available :</div>
-                <div class="col-lg-6"><%= equipment.getAvailableQuantity()%>
+                <div class="col-lg-6">
+                    <%= equipment.getAvailableQuantity()%>
                 </div>
             </div>
             <hr/>
             <div class="row my-3">
                 <div class="h4 col-lg-6">ID :</div>
-                <div class="col-lg-6"><%= equipment.getId()%>
+                <div class="col-lg-6">
+                    <%= equipment.getId()%>
                 </div>
             </div>
             <div class="h4 pt-2">Options</div>
@@ -227,33 +221,27 @@
                 <div class="col">
                     <div class="row">
                         <label for="isStaffOnly" class="col">Staff only mode</label>
-                        <input
-                                type="checkbox"
-                                name="isStaffOnly"
-                                id="isStaffOnly"
-                                class="col"
-                                <%= equipment.isStaffOnly() ? "checked" : ""%>
-                                disabled
+                        <input type="checkbox" name="isStaffOnly" id="isStaffOnly"
+                               class="col" <%=equipment.isStaffOnly() ? "checked" : ""
+                        %>
+                               disabled
                         />
                     </div>
                 </div>
                 <div class="col">
                     <div class="row">
                         <label for="isListed" class="col">Listed</label>
-                        <input
-                                type="checkbox"
-                                name="isListed"
-                                id="isListed"
-                                class="col"
-                                <%= equipment.isListed() ? "checked" : ""%>
-                                disabled
+                        <input type="checkbox" name="isListed" id="isListed"
+                               class="col" <%=equipment.isListed() ? "checked" : "" %>
+                               disabled
                         />
                     </div>
                 </div>
             </div>
             <hr/>
             <div class="h4">Details</div>
-            <p><%= equipment.getDescription()%>
+            <p>
+                <%= equipment.getDescription()%>
             </p>
             <hr/>
             <div class="row mb-4 justify-content-center">
@@ -262,52 +250,41 @@
                     <div class="alert alert-danger" role="alert">
                         This equipment is not available for reservation
                     </div>
-                    <% } else if (equipment.isStaffOnly() && user.getRole() == UserRoles.USER) {%>
+                    <% } else if (equipment.isStaffOnly() &&
+                            user.getRole() == UserRoles.USER) {%>
                     <div class="alert alert-danger" role="alert">
                         This equipment is only available for staff
                     </div>
                     <% } else { %>
                     <div class="col">
-                        <label rel="quantity" class="mb-2 d-block">Quantity</label>
-                        <div class="input-group mb-3" style="width: 170px">
+                        <label rel="quantity"
+                               class="mb-2 d-block">Quantity</label>
+                        <div class="input-group mb-3"
+                             style="width: 170px">
                             <button
                                     class="btn btn-white border border-secondary px-3"
-                                    type="button"
-                                    id="button-addon1"
+                                    type="button" id="button-addon1"
                                     data-mdb-ripple-color="dark"
-                                    onclick="addQuantity(-1)"
-                            >
-                                <img
-                                        src="${pageContext.request.contextPath}/resources/images/buttons/minus-solid.svg"
-                                        alt=""
-             `                           width="20px "
-                                        height="20px"`
-                                />
+                                    onclick="addQuantity(-1)">
+                                <img src="${pageContext.request.contextPath}/resources/images/buttons/minus-solid.svg"
+                                     alt="" ` width="20px " height="20px"
+                                     `/>
                             </button>
-                            <input
-                                    type="text"
-                                    class="form-control text-center border border-secondary"
-                                    placeholder="<%= equipment.getAvailableQuantity()%>"
-                                    max="<%= equipment.getAvailableQuantity()%>"
-                                    min="0"
-                                    id="quantity"
-                                    name="quantity"
-                                    required
-                            />
+                            <input type="text"
+                                   class="form-control text-center border border-secondary"
+                                   placeholder="<%= equipment.getAvailableQuantity()%>"
+                                   max="<%= equipment.getAvailableQuantity()%>"
+                                   min="0" id="quantity" name="quantity"
+                                   required/>
 
                             <button
                                     class="btn btn-white border border-secondary px-3 rounded-end"
-                                    type="button"
-                                    id="button-addon2"
+                                    type="button" id="button-addon2"
                                     data-mdb-ripple-color="dark"
-                                    onclick="addQuantity(1)"
-                            >
-                                <img
-                                        width="20px"
-                                        height="20px"
-                                        src="${pageContext.request.contextPath}/resources/images/buttons/plus-solid.svg"
-                                        alt=""
-                                />
+                                    onclick="addQuantity(1)">
+                                <img width="20px" height="20px"
+                                     src="${pageContext.request.contextPath}/resources/images/buttons/plus-solid.svg"
+                                     alt=""/>
                             </button>
                             <div class="invalid-feedback">
                                 The Max avaiable is 2
@@ -323,18 +300,10 @@
 
         </div>
         <% if (user.getRole() == UserRoles.ADMIN) { %>
-        <form
-                class="d-flex p-3"
-                role="search"
-                onsubmit="return onSearchSubmit(event)"
-        >
-            <input
-                    class="form-control me-2"
-                    type="search"
-                    placeholder="Search"
-                    aria-label="Search"
-                    id="searchText"
-            />
+        <form class="d-flex p-3" role="search"
+              onsubmit="return onSearchSubmit(event)">
+            <input class="form-control me-2" type="search" placeholder="Search"
+                   aria-label="Search" id="searchText"/>
             <button class="btn btn-outline-success" type="submit">
                 Search
             </button>
@@ -360,20 +329,26 @@
 </div>
 
 <% if (user.getRole() == UserRoles.ADMIN) { %>
-<div class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="RemoveModalLabel" aria-hidden="true">
+<div class="modal fade" id="RemoveModal" tabindex="-1"
+     aria-labelledby="RemoveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="RemoveModalLabel">Remove Equipment</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="RemoveModalLabel">Remove
+                    Equipment</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure to Remove the Equipment?
                 Make sure there is no item left in the equipment
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" onclick="removeEquipment(<%= equipment.getId()%>)">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger"
+                        onclick="removeEquipment(<%= equipment.getId()%>)">
                     Confirm
                 </button>
             </div>
@@ -382,22 +357,29 @@
 </div>
 
 
-<div class="modal fade" id="RemoveItemModal" tabindex="-1" aria-labelledby="RemoveItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="RemoveItemModal" tabindex="-1"
+     aria-labelledby="RemoveItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="RemoveItemModalLabel"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="RemoveItemModalConfirmBtn">Confirm</button>
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger"
+                        id="RemoveItemModalConfirmBtn">Confirm
+                </button>
             </div>
         </div>
     </div>
 </div>
 <% } %>
 </body>
+
 </html>

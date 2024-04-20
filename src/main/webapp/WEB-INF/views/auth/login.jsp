@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+
 <head>
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -57,7 +58,8 @@
     });
 
 </script>
-<body>
+
+<body class="bg-light">
 <div class="min-vh-100 d-flex flex-column align-items-center justify-content-center">
     <div>
         <div class="pb-5 text-center fw-bold  fs-1">Centralized equipment system</div>
@@ -66,8 +68,8 @@
             <%= request.getAttribute("error") %>
         </div>
         <% } %>
-        <form onsubmit="return onFormSubmit(event);" action="${pageContext.request.contextPath}/login" method="post"
-              class="p-3 need-validation" novalidate>
+        <form onsubmit="return onFormSubmit(event);" action="${pageContext.request.contextPath}/login"
+              method="post" class="p-3 need-validation" novalidate>
             <div class="row mb-3 align-items-center">
                 <label for="username" class="col-form-label">Username</label>
                 <div class="">
@@ -91,4 +93,5 @@
     </div>
 </div>
 </body>
+
 </html>

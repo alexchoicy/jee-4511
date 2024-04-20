@@ -3,16 +3,20 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+
 <head>
     <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
 
     <script>
         let numberOfNewItems = 0;
+
         function removeRow(id) {
             document.getElementById("row[" + id + "]").remove();
             reindexRow();
@@ -35,6 +39,7 @@
             numberOfNewItems = numberOfNewItemsFix;
             document.getElementById("numberOfNewItems").value = numberOfNewItems;
         }
+
         function onAddnewItem(event) {
             event.preventDefault();
             let serial = document.getElementById("addNewItemSerial").value;
@@ -72,7 +77,7 @@
                 "]' name='status[" +
                 numberOfNewItems +
                 "]'>";
-            html += <options:itemStatusOptions hasValue="true"/>
+            html += <options:itemStatusOptions hasValue="true" />
                 html += "</select></td>";
 
             html +=
@@ -81,7 +86,7 @@
                 "]' name='locationId[" +
                 numberOfNewItems +
                 "]'>";
-            html += <options:locationOptions hasValue="true"/>
+            html += <options:locationOptions hasValue="true" />
                 html += "</select></td>";
 
             html +=
@@ -128,17 +133,17 @@
         }
     </script>
 </head>
-<%
-    ArrayList<CreateEquipmentItem> errorItems = (ArrayList<CreateEquipmentItem>) request.getAttribute("errorItems");
+<% ArrayList<CreateEquipmentItem> errorItems = (ArrayList<CreateEquipmentItem>)
+        request.getAttribute("errorItems");
 %>
-<body>
+
+<body class="bg-light">
 <%@include file="../Components/Nav.jsp" %>
-<form style="display: none" action="${pageContext.request.contextPath}/equipment/create" method="post"
-      id="fakeForm"></form>
+<form style="display: none" action="${pageContext.request.contextPath}/equipment/create"
+      method="post" id="fakeForm"></form>
 <div class="col pb-2 px-3">
     <div
-            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom"
-    >
+            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom">
         <div class="col">
             <h2 class="h2 col">Equipment Detail</h2>
         </div>
@@ -148,11 +153,8 @@
         <div class="row gx-6">
             <div class="col-lg-6">
                 <div class="d-flex justify-content-center">
-                    <img
-                            src="${pageContext.request.contextPath}/resources/images/equipments/awaitUpload.png"
-                            class="img-thumbnail object-fit-cover"
-                            alt=""
-                    />
+                    <img src="${pageContext.request.contextPath}/resources/images/equipments/awaitUpload.png"
+                         class="img-thumbnail object-fit-cover" alt=""/>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -166,52 +168,40 @@
                     <h4 class="alert-heading">Failed to add new items</h4>
                     <ul>
                         <% for (CreateEquipmentItem errorItem : errorItems) { %>
-                        <li><%= errorItem.getSerialNumber() + " : " + errorItem.getErrorMessages()%>
+                        <li>
+                            <%= errorItem.getSerialNumber() + " : " +
+                                    errorItem.getErrorMessages()%>
                         </li>
                         <% } %>
                     </ul>
                 </div>
                 <% } %>
                 <label for="itemName" class="h4 pt-2">Name :</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        name="itemName"
-                        id="itemName"
-                />
+                <input type="text" class="form-control" name="itemName"
+                       id="itemName"/>
                 <div class="h4 pt-2">Options</div>
                 <div class="row">
                     <div class="col">
                         <div class="row">
-                            <label for="isStaffOnly" class="col">Staff only mode</label>
-                            <input
-                                    type="checkbox"
-                                    name="isStaffOnly"
-                                    id="isStaffOnly"
-                                    class="col"
-                            />
+                            <label for="isStaffOnly" class="col">Staff
+                                only mode</label>
+                            <input type="checkbox" name="isStaffOnly"
+                                   id="isStaffOnly" class="col"/>
                         </div>
                     </div>
                     <div class="col">
                         <div class="row">
-                            <label for="isListed" class="col">Listed</label>
-                            <input
-                                    type="checkbox"
-                                    name="isListed"
-                                    id="isListed"
-                                    class="col"
-                            />
+                            <label for="isListed"
+                                   class="col">Listed</label>
+                            <input type="checkbox" name="isListed"
+                                   id="isListed" class="col"/>
                         </div>
                     </div>
                 </div>
-                <label for="itemDescription" class="h4 pt-2">Description</label>
-                <textarea
-                        name="itemDescription"
-                        id="itemDescription"
-                        cols="30"
-                        rows="10"
-                        class="form-control"
-                ></textarea>
+                <label for="itemDescription"
+                       class="h4 pt-2">Description</label>
+                <textarea name="itemDescription" id="itemDescription"
+                          cols="30" rows="10" class="form-control"></textarea>
                 <hr/>
                 <div class="row mb-4 justify-content-center">
                     <button class="btn btn-primary">
@@ -229,12 +219,8 @@
             <div class="row justify-content-center">
                 <div class="col">
                     <label for="addNewItemSerial">Serial Number</label>
-                    <input
-                            type="text"
-                            name="addNewItemSerial"
-                            id="addNewItemSerial"
-                            class=""
-                    />
+                    <input type="text" name="addNewItemSerial" id="addNewItemSerial"
+                           class=""/>
                 </div>
                 <div class="col">
                     <label for="addNewItemStatus">Status</label>
@@ -244,11 +230,7 @@
                 </div>
                 <div class="col">
                     <label for="addNewItemLocation">Location</label>
-                    <select
-                            name="addNewItemLocation"
-                            id="addNewItemLocation"
-                            required
-                    >
+                    <select name="addNewItemLocation" id="addNewItemLocation" required>
                         <options:locationOptions hasValue="false"/>
                     </select>
                 </div>
@@ -277,6 +259,6 @@
 </div>
 
 
-
 </body>
+
 </html>

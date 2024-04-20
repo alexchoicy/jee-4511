@@ -6,21 +6,25 @@
 <%@ page import="com.cems.Model.Request.CreateEquipmentItem" %>
 <%@ taglib prefix="options" uri="/WEB-INF/tlds/cems_equipment_tags.tld" %>
 <html>
+
 <head>
     <title>Title</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
 
 
 </head>
-<%
-    EquipmentDisplay display = (EquipmentDisplay) request.getAttribute("equipmentDisplay");
+<% EquipmentDisplay display = (EquipmentDisplay) request.getAttribute("equipmentDisplay");
     ArrayList<EquipmentItem> item = display.getItems();
     Equipment equipment = display.getEquipment();
-    ArrayList<CreateEquipmentItem> errorItems = (ArrayList<CreateEquipmentItem>) request.getAttribute("errorItems");
+    ArrayList<CreateEquipmentItem> errorItems = (ArrayList<CreateEquipmentItem>)
+            request.getAttribute("errorItems");
     int numberOfNewItems = errorItems == null ? 0 : errorItems.size();
 %>
 <script>
@@ -51,7 +55,7 @@
                         "<td>" + status + "</td>" +
                         "<td>" + borrowedTimes + "</td>" +
                         "<td>" + location.name + "</td>" +
-                        "<td> <button data-item-id='"+ id + "' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#RemoveItemModal' >Remove Items</button></td>"
+                        "<td> <button data-item-id='" + id + "' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#RemoveItemModal' >Remove Items</button></td>"
                     ;
                     document.getElementById("itemTable").appendChild(row);
                 });
@@ -69,7 +73,7 @@
             const confirmBtn = document.getElementById("RemoveItemModalConfirmBtn");
 
             confirmBtn.addEventListener('click', () => {
-                removeItem(<%= equipment.getId()%>, itemID);
+                removeItem(<%= equipment.getId() %>, itemID);
             });
 
             const body = removeItemModal.querySelector(".modal-body");
@@ -141,7 +145,7 @@
             "]' name='status[" +
             numberOfNewItems +
             "]'>";
-        html += <options:itemStatusOptions hasValue="true"/>
+        html += <options:itemStatusOptions hasValue="true" />
             html += "</select></td>";
 
         html +=
@@ -150,7 +154,7 @@
             "]' name='locationId[" +
             numberOfNewItems +
             "]'>";
-        html += <options:locationOptions hasValue="true"/>
+        html += <options:locationOptions hasValue="true" />
             html += "</select></td>";
 
         html +=
@@ -233,9 +237,9 @@
             alert("Equipment removed");
             window.location.href = '${pageContext.request.contextPath}/';
         }).catch((error) => {
-                console.error('Error:', error);
-                alert(error.message);
-            });
+            console.error('Error:', error);
+            alert(error.message);
+        });
     }
 
     function removeItem(id, itemID) {
@@ -250,7 +254,7 @@
             }
             return response.text();
         }).then(data => {
-            alert("Item id "+ itemID + " removed");
+            alert("Item id " + itemID + " removed");
             window.location.href = '${pageContext.request.contextPath}/equipment/' + id + '/edit';
             console.log(data);
         }).catch((error) => {
@@ -260,39 +264,36 @@
     }
 </script>
 
-<body>
+<body class="bg-light">
 <%@include file="../Components/Nav.jsp" %>
-<form style="display: none" action="${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>" method="post"
-      id="fakeForm"></form>
+<form style="display: none"
+      action="${pageContext.request.contextPath}/equipment/<%= equipment.getId()%>"
+      method="post" id="fakeForm"></form>
 <div class="col pb-2 px-3">
     <div
-            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom"
-    >
+            class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom">
         <div class="col">
             <h2 class="h2 col">Equipment Detail</h2>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#RemoveModal">
+            <button type="button" class="btn btn-danger mx-2"
+                    data-bs-toggle="modal" data-bs-target="#RemoveModal">
                 Remove
             </button>
-            <button
-                    class="btn btn-primary"
-                    onclick="goBackToNormalMode()"
-            >
+            <button class="btn btn-primary"
+                    onclick="goBackToNormalMode()">
                 Cancel
             </button>
         </div>
     </div>
     <form id="mainForm" onsubmit="return onUpdateSubmit(event)">
-        <input type="hidden" name="numberOfNewItems" value="0" id="numberOfNewItems">
+        <input type="hidden" name="numberOfNewItems" value="0"
+               id="numberOfNewItems">
         <div class="row gx-6">
             <div class="col-lg-6">
                 <div class="d-flex justify-content-center">
-                    <img
-                            src="${pageContext.request.contextPath}/<%= equipment.getImagePath()%>"
-                            class="img-thumbnail object-fit-cover"
-                            alt=""
-                    />
+                    <img src="${pageContext.request.contextPath}/<%= equipment.getImagePath()%>"
+                         class="img-thumbnail object-fit-cover" alt=""/>
                 </div>
             </div>
             <div class="col-lg-6">
@@ -302,11 +303,17 @@
                 </div>
                 <% } %>
                 <% if (errorItems != null) { %>
-                <div class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading">Failed to add new items</h4>
+                <div class="alert alert-danger"
+                     role="alert">
+                    <h4 class="alert-heading">Failed to add
+                        new items</h4>
                     <ul>
-                        <% for (CreateEquipmentItem errorItem : errorItems) { %>
-                        <li><%= errorItem.getSerialNumber() + " : " + errorItem.getErrorMessages()%>
+                        <% for (CreateEquipmentItem
+                                errorItem : errorItems) { %>
+                        <li>
+                            <%= errorItem.getSerialNumber()
+                                    + " : " +
+                                    errorItem.getErrorMessages()%>
                         </li>
                         <% } %>
                     </ul>
@@ -314,55 +321,55 @@
                 <% } %>
                 <div class="row">
                     <div class="h4 col-lg-6">ID :</div>
-                    <div class="col-lg-6"><%= equipment.getId()%>
+                    <div class="col-lg-6">
+                        <%= equipment.getId()%>
                     </div>
                 </div>
-                <label for="itemName" class="h4 pt-2">Name :</label>
-                <input
-                        type="text"
-                        class="form-control"
-                        value="<%= equipment.getName()%>"
-                        name="itemName"
-                        id="itemName"
-                />
+                <label for="itemName"
+                       class="h4 pt-2">Name :</label>
+                <input type="text" class="form-control"
+                       value="<%= equipment.getName()%>"
+                       name="itemName" id="itemName"/>
                 <div class="h4 pt-2">Options</div>
                 <div class="row">
                     <div class="col">
                         <div class="row">
-                            <label for="isStaffOnly" class="col">Staff only mode</label>
-                            <input
-                                    type="checkbox"
-                                    name="isStaffOnly"
-                                    id="isStaffOnly"
-                                    class="col"
-                                    <%= equipment.isStaffOnly() ? "checked" : ""%>
+                            <label for="isStaffOnly"
+                                   class="col">Staff only
+                                mode</label>
+                            <input type="checkbox"
+                                   name="isStaffOnly"
+                                   id="isStaffOnly"
+                                   class="col"
+                                    <%=equipment.isStaffOnly()
+                                            ? "checked" : "" %>
                             />
                         </div>
                     </div>
                     <div class="col">
                         <div class="row">
-                            <label for="isListed" class="col">Listed</label>
-                            <input
-                                    type="checkbox"
-                                    name="isListed"
-                                    id="isListed"
-                                    class="col"
-                                    <%= equipment.isListed() ? "checked" : ""%>
+                            <label for="isListed"
+                                   class="col">Listed</label>
+                            <input type="checkbox"
+                                   name="isListed"
+                                   id="isListed"
+                                   class="col"
+                                    <%=equipment.isListed()
+                                            ? "checked" : "" %>
                             />
                         </div>
                     </div>
                 </div>
-                <label for="itemDescription" class="h4 pt-2">Description</label>
-                <textarea
-                        name="itemDescription"
-                        id="itemDescription"
-                        cols="30"
-                        rows="10"
-                        class="form-control"
-                ><%= equipment.getDescription()%></textarea>
+                <label for="itemDescription"
+                       class="h4 pt-2">Description</label>
+                <textarea name="itemDescription"
+                          id="itemDescription" cols="30"
+                          rows="10"
+                          class="form-control"><%= equipment.getDescription()%></textarea>
 
                 <hr/>
-                <div class="row mb-4 justify-content-center">
+                <div
+                        class="row mb-4 justify-content-center">
                     <button class="btn btn-primary">
                         Update Details
                     </button>
@@ -378,26 +385,20 @@
             <div class="row justify-content-center">
                 <div class="col">
                     <label for="addNewItemSerial">Serial Number</label>
-                    <input
-                            type="text"
-                            name="addNewItemSerial"
-                            id="addNewItemSerial"
-                            class=""
-                    />
+                    <input type="text" name="addNewItemSerial"
+                           id="addNewItemSerial" class=""/>
                 </div>
                 <div class="col">
                     <label for="addNewItemStatus">Status</label>
-                    <select name="addNewItemStatus" id="addNewItemStatus" required>
+                    <select name="addNewItemStatus"
+                            id="addNewItemStatus" required>
                         <options:itemStatusOptions hasValue="false"/>
                     </select>
                 </div>
                 <div class="col">
                     <label for="addNewItemLocation">Location</label>
-                    <select
-                            name="addNewItemLocation"
-                            id="addNewItemLocation"
-                            required
-                    >
+                    <select name="addNewItemLocation"
+                            id="addNewItemLocation" required>
                         <options:locationOptions hasValue="false"/>
                     </select>
                 </div>
@@ -427,18 +428,10 @@
     <div class="p-3">
         <h2 class="h2">Current Items</h2>
     </div>
-    <form
-            class="d-flex p-3"
-            role="search"
-            onsubmit="return onSearchSubmit(event)"
-    >
-        <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-                id="searchText"
-        />
+    <form class="d-flex p-3" role="search"
+          onsubmit="return onSearchSubmit(event)">
+        <input class="form-control me-2" type="search"
+               placeholder="Search" aria-label="Search" id="searchText"/>
         <button class="btn btn-outline-success" type="submit">
             Search
         </button>
@@ -461,41 +454,56 @@
     </div>
 </div>
 
-<div class="modal fade" id="RemoveModal" tabindex="-1" aria-labelledby="RemoveModalLabel" aria-hidden="true">
+<div class="modal fade" id="RemoveModal" tabindex="-1"
+     aria-labelledby="RemoveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="RemoveModalLabel">Remove Equipment</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="RemoveModalLabel">
+                    Remove Equipment</h1>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure to Remove the Equipment?
                 Make sure there is no item left in the equipment
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" onclick="removeEquipment(<%= equipment.getId()%>)">Confirm</button>
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger"
+                        onclick="removeEquipment(<%= equipment.getId()%>)">Confirm
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="RemoveItemModal" tabindex="-1" aria-labelledby="RemoveItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="RemoveItemModal" tabindex="-1"
+     aria-labelledby="RemoveItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="RemoveItemModalLabel"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="RemoveItemModalLabel">
+                </h1>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="RemoveItemModalConfirmBtn">Confirm</button>
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger"
+                        id="RemoveItemModalConfirmBtn">Confirm
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 </body>
+
 </html>
