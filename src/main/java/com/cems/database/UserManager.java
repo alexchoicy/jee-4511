@@ -86,6 +86,73 @@ public class UserManager extends DatabaseManager {
         return false;
     }
 
+    public boolean CreateUser(Users user) {
+        try (Connection connection = getConnection()) {
+            String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;";
+            PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+            checkStatement.setString(1, user.getUsername());
+            checkStatement.setInt(2, user.getUserId());
+            ResultSet resultSet = checkStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return false;
+                }
+            }
+
+            String createSql = "INSERT INTO user (username, password, phone_number, first_name, last_name, role) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement createStatement = connection.prepareStatement(createSql, Statement.RETURN_GENERATED_KEYS);
+            createStatement.setString(1, user.getUsername());
+            createStatement.setString(2, user.getPassword());
+            createStatement.setString(3, "");
+            createStatement.setString(4, user.getFirstName());
+            createStatement.setString(5, user.getLastName());
+            createStatement.setInt(6, user.getRole().getValue());
+            int rowsAffected = createStatement.executeUpdate();
+            
+            ResultSet generatedKeys = createStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedUserId = generatedKeys.getInt(1);
+                user.setUserId(generatedUserId);
+            }
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean EditUser(Users user) {
+        try (Connection connection = getConnection()) {
+            String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;;";
+            PreparedStatement checkStatement = connection.prepareStatement(checkSql);
+            checkStatement.setString(1, user.getUsername());
+            checkStatement.setInt(2, user.getUserId());
+            ResultSet resultSet = checkStatement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return false;
+                }
+            }
+
+            String editSql = "UPDATE user SET username = ?, first_name = ?, last_name = ?, password = ?, role = ? WHERE user_id = ?";
+            PreparedStatement editStatement = connection.prepareStatement(editSql);
+            editStatement.setString(1, user.getUsername());
+            editStatement.setString(2, user.getFirstName());
+            editStatement.setString(3, user.getLastName());
+            editStatement.setString(4, user.getPassword());
+            editStatement.setInt(5, user.getRole().getValue());
+            editStatement.setInt(6, user.getUserId());
+            int rowsAffected = editStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private Users GetUserDataToBean(ResultSet resultSet) throws SQLException {
         Users user = new Users();
         user.setUserId(resultSet.getInt("user_id"));
@@ -96,5 +163,18 @@ public class UserManager extends DatabaseManager {
         user.setPassword(resultSet.getString("password"));
         user.setRole(UserRoles.getRoles(resultSet.getInt("role")));
         return user;
+    }
+    
+    public boolean RemoveUser(Users user) {
+        try (Connection connection = getConnection()) {
+            String removeSql = "DELETE FROM user WHERE username = ?;";
+            PreparedStatement removeStatement = connection.prepareStatement(removeSql);
+            removeStatement.setString(1, user.getUsername());
+            int rowsAffected = removeStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
