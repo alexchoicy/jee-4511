@@ -147,6 +147,7 @@ public class CreateReservation extends HttpServlet {
             //success
             Cookie cartCookie = new Cookie("reservationCart", "");
             cartCookie.setMaxAge(0);
+            cartCookie.setPath(req.getContextPath());
             resp.addCookie(cartCookie);
             //TODO : finish after the list of reservation done
             return;
