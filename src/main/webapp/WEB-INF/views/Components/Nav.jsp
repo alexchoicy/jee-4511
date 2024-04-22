@@ -45,7 +45,7 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/update-info">Account
                             information</a></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
+                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a></li>
                     </ul>
                 </div>
             </ul>
