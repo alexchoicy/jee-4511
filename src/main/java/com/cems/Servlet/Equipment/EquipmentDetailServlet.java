@@ -94,10 +94,10 @@ public class EquipmentDetailServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!AuthUtils.isAdmin(request)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+//        if (!AuthUtils.isAdmin(request)) {
+//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//            return;
+//        }
 
         String pathInfo = request.getPathInfo(); // /{id}/items/{id}
         String[] pathParts = pathInfo.split("/");
@@ -142,10 +142,10 @@ public class EquipmentDetailServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!AuthUtils.isAdmin(request)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
+//        if (!AuthUtils.isAdmin(request)) {
+//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//            return;
+//        }
 
         //magic code
         //my magical fake form data suddenly work back with this
