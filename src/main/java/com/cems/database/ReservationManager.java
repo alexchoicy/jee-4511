@@ -55,6 +55,7 @@ public class ReservationManager extends DatabaseManager {
                 int itemcount = 0;
                 for (EquipmentItem equipment : equipments) {
                     itemcount ++;
+                    System.out.println("itemCount :" + itemcount + " , Request Quantity: " + cartItem.getQuantity());
                     if (!equipment.isListed()) {
                         errorsItems.add(String.format("Item %s is not Listed to reservation", cartItem.getEquipmentID()));
                         continue;
@@ -73,8 +74,8 @@ public class ReservationManager extends DatabaseManager {
 
                     changeStatusStatement.executeUpdate();
                     items.add(equipment.getId());
-                    if (itemcount > cartItem.getQuantity()) {
-                        continue;
+                    if (itemcount == cartItem.getQuantity()) {
+                        break;
                     }
                 }
                 connection.commit();
