@@ -12,6 +12,7 @@ public class EquipmentItem implements Serializable {
     private boolean isListed;
     private ItemStatus status;
     private int equipmentId;
+    private int currentLocation;
     private Location location;
 
     public int getId() {
@@ -76,5 +77,13 @@ public class EquipmentItem implements Serializable {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public int getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(int currentLocation) {
+        this.currentLocation = currentLocation;
     }
 }

@@ -1,6 +1,7 @@
 package com.cems.database;
 
 import com.cems.Enums.ItemStatus;
+import com.cems.Enums.ReservationItemStatus;
 import com.cems.Enums.ReservationStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Model.Equipment;
@@ -22,7 +23,9 @@ public class ReservationManager extends DatabaseManager {
     //return error message
     public ArrayList<String> createReservation(Users user, ArrayList<ReservationCart> cart, int locationID, Timestamp startDateTime, Timestamp endDateTime){
         ArrayList<String> errorsItems = new ArrayList<>();
+        //i am lazy to create another object
         ArrayList<Integer> items = new ArrayList<Integer>();
+        ArrayList<ReservationItemStatus> items_status = new ArrayList<>();
         String searchQuery = "SELECT * FROM equipment_item INNER JOIN equipment ON equipment.equipment_id = ? WHERE equipment_item.equipment_id = ? AND status = 1 ORDER BY CASE WHEN current_location = ? THEN 0 ELSE 1 END, current_location DESC";
 
         try (Connection connection = getConnection()){
@@ -45,6 +48,7 @@ public class ReservationManager extends DatabaseManager {
                     item.setEquipmentId(resultSet.getInt("equipment_id"));
                     item.setStaffOnly(resultSet.getBoolean("isStaffOnly"));
                     item.setListed(resultSet.getBoolean("isListed"));
+                    item.setCurrentLocation(resultSet.getInt("current_location"));
                     equipments.add(item);
                 }
 
@@ -74,6 +78,7 @@ public class ReservationManager extends DatabaseManager {
 
                     changeStatusStatement.executeUpdate();
                     items.add(equipment.getId());
+                    items_status.add(locationID == equipment.getCurrentLocation() ? ReservationItemStatus.ARRIVED : ReservationItemStatus.NEED_DELIVERY);
                     if (itemcount == cartItem.getQuantity()) {
                         break;
                     }
@@ -103,13 +108,15 @@ public class ReservationManager extends DatabaseManager {
                 }
             }
             connection.commit();
-
-            for (Integer itemID : items) {
-                String createReservationItemQuery = "INSERT INTO reservation_items (reservation_id, equipment_item_id) VALUES (?, ?)";
+            for (int i = 0; i < items.size(); i++) {
+                int itemID = items.get(i);
+                int item_status_value = items_status.get(i).getValue();
+                String createReservationItemQuery = "INSERT INTO reservation_items (reservation_id, equipment_item_id, reservation_items_status) VALUES (?, ?, ?)";
                 PreparedStatement createReservationItemStatement = connection.prepareStatement(createReservationItemQuery);
 
                 createReservationItemStatement.setInt(1, newId);
                 createReservationItemStatement.setInt(2, itemID);
+                createReservationItemStatement.setInt(3, item_status_value);
                 createReservationItemStatement.executeUpdate();
             }
             connection.commit();
