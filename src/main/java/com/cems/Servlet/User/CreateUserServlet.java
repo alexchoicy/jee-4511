@@ -5,12 +5,10 @@
 package com.cems.Servlet.User;
 
 import com.cems.Enums.UserRoles;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.database.UserManager;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,7 +39,7 @@ public class CreateUserServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         request.setAttribute("user", user);
 
@@ -57,7 +55,7 @@ public class CreateUserServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         
         if(!user.getRole().equals(UserRoles.ADMIN)){
             response.sendRedirect(request.getContextPath());
@@ -72,9 +70,9 @@ public class CreateUserServlet extends HttpServlet {
         String passwordConfirm = request.getParameter("passwordConfirm");
         int roleNum = Integer.parseInt(request.getParameter("Role"));
         
-        UserRoles role = UserRoles.getRoles(roleNum);
+        UserRoles role = UserRoles.getRole(roleNum);
         
-        Users newUser = new Users();
+        User newUser = new User();
         
         if (username.isEmpty() || username == null || firstName.isEmpty() || firstName == null || lastName.isEmpty() || lastName == null || password.isEmpty() || password == null || passwordConfirm.isEmpty() || passwordConfirm == null) {
             request.setAttribute("noUsername", "You need to enter All the information");

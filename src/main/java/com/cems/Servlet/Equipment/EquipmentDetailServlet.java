@@ -8,7 +8,7 @@ import com.cems.Model.EquipmentItem;
 import com.cems.Model.Location;
 import com.cems.Model.Request.CreateEquipmentItem;
 import com.cems.Model.Request.ReservationCart;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.Utils.CookieUtils;
 import com.cems.Utils.ParseUtil;
@@ -243,7 +243,7 @@ public class EquipmentDetailServlet extends HttpServlet {
 
 
     private void AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws ServletException, IOException {
-        Users user = (Users) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         UserRoles role = user.getRole();
         int quantity = ParseUtil.tryParseInt(request.getParameter("quantity"), 0);
         if (quantity == 0) {

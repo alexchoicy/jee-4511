@@ -1,4 +1,4 @@
-<%@ page import="com.cems.Model.Users" %>
+<%@ page import="com.cems.Model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>

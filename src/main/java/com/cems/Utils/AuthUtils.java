@@ -1,7 +1,7 @@
 package com.cems.Utils;
 
 import com.cems.Enums.UserRoles;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +29,7 @@ public class AuthUtils {
     }
 
     public static boolean isAdmin(HttpServletRequest request) {
-        Users user = (Users) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         return user.getRole().equals(UserRoles.ADMIN);
     }
 }

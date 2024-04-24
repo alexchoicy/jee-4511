@@ -1,7 +1,7 @@
 <%@ page import="com.cems.Enums.UserRoles" %>
-<%@ page import="com.cems.Model.Users" %>
+<%@ page import="com.cems.Model.User" %>
 <%
-    Users userBean = (Users) session.getAttribute("user");
+    User userBean = (User) session.getAttribute("user");
 %>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">

@@ -215,10 +215,7 @@ public class EquipmentManager extends DatabaseManager {
                     item.setBorrowedTimes(resultSet.getInt("borrowed_time"));
                     item.setStatus(ItemStatus.getStatus(resultSet.getInt("status")));
                     item.setEquipmentId(resultSet.getInt("equipment_id"));
-                    Location location = new Location();
-                    location.setId(resultSet.getInt("location_id"));
-                    location.setName(resultSet.getString("location_name"));
-                    location.setAddress(resultSet.getString("location_address"));
+                    Location location = Location.create(resultSet);
                     item.setLocation(location);
                     items.add(item);
                 }

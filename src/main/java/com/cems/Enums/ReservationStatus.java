@@ -5,7 +5,7 @@ import java.util.HashMap;
 public enum ReservationStatus {
 
     PENDING(1, "Pending for approval"),
-    ACCEPTED(2, "Accepted"),
+    APPROVED(2, "Approved"),
     ACTIVE(3, "Active"),
     FINISHED(4, "Finished"),
     CANCELED(5, "Canceled");

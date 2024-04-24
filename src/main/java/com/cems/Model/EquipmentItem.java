@@ -14,9 +14,17 @@ public class EquipmentItem implements Serializable {
     private int equipmentId;
     private int currentLocation;
     private Location location;
-
+    private String equipmentName;
     public int getId() {
         return id;
+    }
+
+    public String getEquipmentName() {
+        return equipmentName;
+    }
+
+    public void setEquipmentName(String equipmentName) {
+        this.equipmentName = equipmentName;
     }
 
     public void setId(int id) {

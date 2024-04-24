@@ -4,7 +4,7 @@
  */
 package com.cems.Servlet.User;
 
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.database.UserManager;
 
@@ -38,7 +38,7 @@ public class UpdateUserInfoServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         request.setAttribute("user", user);
 
@@ -54,7 +54,7 @@ public class UpdateUserInfoServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         request.setAttribute("user", user);
 
@@ -65,7 +65,7 @@ public class UpdateUserInfoServlet extends HttpServlet {
         String newPassword = request.getParameter("inputPassword");
         String newPasswordConfirm = request.getParameter("newPassword");
 
-        Users newUser = new Users();
+        User newUser = new User();
 
         if (OldPassword.isEmpty() || OldPassword == null) {
             request.setAttribute("noOldPassword", "You need to enter your old password");

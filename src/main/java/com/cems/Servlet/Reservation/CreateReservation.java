@@ -2,11 +2,10 @@ package com.cems.Servlet.Reservation;
 
 import com.cems.Model.Location;
 import com.cems.Model.Request.ReservationCart;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.Utils.CookieUtils;
 import com.cems.Utils.ParseUtil;
-import com.cems.database.EquipmentManager;
 import com.cems.database.LocationManager;
 import com.cems.database.ReservationManager;
 import com.google.gson.Gson;
@@ -58,7 +57,7 @@ public class CreateReservation extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Users user = (Users) req.getSession().getAttribute("user");
+        User user = (User) req.getSession().getAttribute("user");
         String value = CookieUtils.getCookie(req, "reservationCart");
         ArrayList<ReservationCart> cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>() {
         }.getType());

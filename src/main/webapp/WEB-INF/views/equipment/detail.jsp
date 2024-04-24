@@ -2,7 +2,7 @@
 <%@ page import="com.cems.Model.EquipmentItem" %>
 <%@ page import="com.cems.Model.Equipment" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.cems.Model.Users" %>
+<%@ page import="com.cems.Model.User" %>
 <%@ page import="com.cems.Enums.UserRoles" %>
 <html>
 <head>
@@ -19,7 +19,7 @@
 <% EquipmentDisplay display = (EquipmentDisplay) request.getAttribute("equipmentDisplay");
     ArrayList<EquipmentItem> item = display.getItems();
     Equipment equipment = display.getEquipment();
-    Users user = (Users) request.getSession().getAttribute("user");
+    User user = (User) request.getSession().getAttribute("user");
 %>
 <script>
     const maxQuantity = <%= equipment.getAvailableQuantity() %>;

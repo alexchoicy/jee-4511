@@ -1,5 +1,6 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="com.cems.Model.Request.ReservationCart" %>
+<%@ page import="com.cems.Model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <!DOCTYPE html>
@@ -57,7 +58,7 @@
 <%@include file="../Components/Nav.jsp" %>
 <%@ taglib prefix="options" uri="/WEB-INF/tlds/cems_equipment_tags.tld" %>
 <%@ taglib prefix="option" uri="/WEB-INF/tlds/cems_equipment_tags.tld" %>
-<% Users user = (Users) request.getSession().getAttribute("user");
+<% User user = (User) request.getSession().getAttribute("user");
     ArrayList<ReservationCart> cart = (ArrayList<ReservationCart>) request.getAttribute("cartItems");
     ArrayList<String> errors = (ArrayList<String>) request.getAttribute("errors");
 %>

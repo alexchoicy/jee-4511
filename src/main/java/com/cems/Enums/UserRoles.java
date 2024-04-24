@@ -22,7 +22,7 @@ public enum UserRoles {
         this.value = value;
     }
 
-    public static UserRoles getRoles(int role) {
+    public static UserRoles getRole(int role) {
         return map.get(role);
     }
 

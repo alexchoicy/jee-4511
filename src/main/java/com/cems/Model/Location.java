@@ -1,6 +1,8 @@
 package com.cems.Model;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Location implements Serializable {
     private int id;
@@ -29,5 +31,13 @@ public class Location implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public static Location create(ResultSet resultSet) throws SQLException {
+        Location location = new Location();
+        location.setId(resultSet.getInt("location_id"));
+        location.setName(resultSet.getString("location_name"));
+        location.setAddress(resultSet.getString("location_address"));
+        return location;
     }
 }

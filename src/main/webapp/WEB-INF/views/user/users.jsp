@@ -1,4 +1,4 @@
-<%@ page import="com.cems.Model.Users" %>
+<%@ page import="com.cems.Model.User" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.io.Console" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -53,8 +53,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% ArrayList<Users> users = (ArrayList<Users>) request.getAttribute("users");
-                        for (Users user : users) {
+                    <% ArrayList<User> users = (ArrayList<User>) request.getAttribute("users");
+                        for (User user : users) {
                             String removeUserId = "exampleModal" + user.getUserId();
                             String editUserId = "offcanvasExample" + user.getUserId();
                     %>

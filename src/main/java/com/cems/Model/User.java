@@ -3,8 +3,9 @@ package com.cems.Model;
 import com.cems.Enums.UserRoles;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 
-public class Users implements Serializable {
+public class User implements Serializable {
     private int userId;
     private String username;
     private String phoneNumber;
@@ -67,5 +68,20 @@ public class Users implements Serializable {
 
     public void setRole(UserRoles role) {
         this.role = role;
+    }
+
+    public static User create(ResultSet resultSet) {
+        User user = new User();
+        try {
+            user.setUserId(resultSet.getInt("user_id"));
+            user.setUsername(resultSet.getString("username"));
+            user.setPhoneNumber(resultSet.getString("phone_number"));
+            user.setFirstName(resultSet.getString("first_name"));
+            user.setLastName(resultSet.getString("last_name"));
+            user.setRole(UserRoles.getRole(resultSet.getInt("role")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

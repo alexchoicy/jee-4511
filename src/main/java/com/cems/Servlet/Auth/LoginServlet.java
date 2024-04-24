@@ -1,6 +1,6 @@
 package com.cems.Servlet.Auth;
 
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.database.UserManager;
 
@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.Connection;
-import java.util.ArrayList;
 
 @WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -41,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         System.out.println("LoginServlet doPost");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        Users user = userManager.Login(username, password);
+        User user = userManager.Login(username, password);
         System.out.println(username + " " + password);
         if (user == null) {
             request.setAttribute("error", "Invalid username or password");

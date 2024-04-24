@@ -1,7 +1,7 @@
 package com.cems.Servlet.User;
 
 import com.cems.Enums.UserRoles;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.database.UserManager;
 
@@ -33,7 +33,7 @@ public class UserServlet extends HttpServlet {
         }
 
         System.out.println("UserServlet doGet");
-        ArrayList<Users> users = userManager.getUsers();
+        ArrayList<User> users = userManager.getUsers();
 //        System.out.println(users);
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/users.jsp");
@@ -50,7 +50,7 @@ public class UserServlet extends HttpServlet {
         }
 
         HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         if (!user.getRole().equals(UserRoles.ADMIN)) {
             response.sendRedirect(request.getContextPath());
@@ -68,7 +68,7 @@ public class UserServlet extends HttpServlet {
         int roleNum = 0;
         int editUser = 0;
 
-        Users newUser = new Users();
+        User newUser = new User();
 
         if (removeUser != null) {
             newUser.setUsername(removeUser);
@@ -83,7 +83,7 @@ public class UserServlet extends HttpServlet {
         if (editUserName != null) {
             editUser = Integer.parseInt(request.getParameter("UserId"));
             roleNum = Integer.parseInt(request.getParameter("editRole"));
-            UserRoles editRole = UserRoles.getRoles(roleNum);
+            UserRoles editRole = UserRoles.getRole(roleNum);
             newUser.setUserId(editUser);
             newUser.setUsername(editUserName);
             newUser.setFirstName(editFirstName);

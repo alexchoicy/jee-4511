@@ -2,7 +2,7 @@ package com.cems.Servlet.Equipment;
 
 import com.cems.Model.Equipment;
 import com.cems.Model.PagedResult;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 import com.cems.Utils.AuthUtils;
 import com.cems.Utils.ParseUtil;
 import com.cems.database.EquipmentManager;
@@ -31,7 +31,7 @@ public class EquipmentServlet extends HttpServlet {
             AuthUtils.redirectToLogin(request, response);
             return;
         }
-        Users user = (Users) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         int userId = user.getUserId();
 
         String searchText = request.getParameter("searchText");

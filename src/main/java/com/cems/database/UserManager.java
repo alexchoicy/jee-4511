@@ -1,14 +1,14 @@
 package com.cems.database;
 
 import com.cems.Enums.UserRoles;
-import com.cems.Model.Users;
+import com.cems.Model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class UserManager extends DatabaseManager {
 
-    public ArrayList<Users> getUsers() {
+    public ArrayList<User> getUsers() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user";
             System.out.println("sql: " + sql);
@@ -20,9 +20,9 @@ public class UserManager extends DatabaseManager {
                 return null;
             }
             ResultSet resultSet = statement.getResultSet();
-            ArrayList<Users> users = new ArrayList<>();
+            ArrayList<User> users = new ArrayList<>();
             while (resultSet.next()) {
-                Users user = GetUserDataToBean(resultSet);
+                User user = GetUserDataToBean(resultSet);
                 users.add(user);
             }
             resultSet.close();
@@ -36,7 +36,7 @@ public class UserManager extends DatabaseManager {
         return null;
     }
 
-    public Users Login(String username, String password) {
+    public User Login(String username, String password) {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user WHERE username = ? AND password = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -45,7 +45,7 @@ public class UserManager extends DatabaseManager {
             statement.setString(2, password);
 
             ResultSet resultSet = statement.executeQuery();
-            Users user;
+            User user;
             if (resultSet.next()) {
                 user = GetUserDataToBean(resultSet);
                 return user;
@@ -57,7 +57,7 @@ public class UserManager extends DatabaseManager {
         return null;
     }
 
-    public boolean updateUserInfo(Users user) {
+    public boolean updateUserInfo(User user) {
         try (Connection connection = getConnection()) {
             String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;";
             PreparedStatement checkStatement = connection.prepareStatement(checkSql);
@@ -86,7 +86,7 @@ public class UserManager extends DatabaseManager {
         return false;
     }
 
-    public boolean CreateUser(Users user) {
+    public boolean CreateUser(User user) {
         try (Connection connection = getConnection()) {
             String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;";
             PreparedStatement checkStatement = connection.prepareStatement(checkSql);
@@ -123,7 +123,7 @@ public class UserManager extends DatabaseManager {
         return false;
     }
     
-    public boolean EditUser(Users user) {
+    public boolean EditUser(User user) {
         try (Connection connection = getConnection()) {
             String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;;";
             PreparedStatement checkStatement = connection.prepareStatement(checkSql);
@@ -153,19 +153,19 @@ public class UserManager extends DatabaseManager {
         return false;
     }
 
-    private Users GetUserDataToBean(ResultSet resultSet) throws SQLException {
-        Users user = new Users();
+    private User GetUserDataToBean(ResultSet resultSet) throws SQLException {
+        User user = new User();
         user.setUserId(resultSet.getInt("user_id"));
         user.setUsername(resultSet.getString("username"));
         user.setPhoneNumber(resultSet.getString("phone_number"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setLastName(resultSet.getString("last_name"));
         user.setPassword(resultSet.getString("password"));
-        user.setRole(UserRoles.getRoles(resultSet.getInt("role")));
+        user.setRole(UserRoles.getRole(resultSet.getInt("role")));
         return user;
     }
     
-    public boolean RemoveUser(Users user) {
+    public boolean RemoveUser(User user) {
         try (Connection connection = getConnection()) {
             String removeSql = "DELETE FROM user WHERE username = ?;";
             PreparedStatement removeStatement = connection.prepareStatement(removeSql);
