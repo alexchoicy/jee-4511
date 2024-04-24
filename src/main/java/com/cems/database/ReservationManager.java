@@ -4,12 +4,10 @@ import com.cems.Enums.ItemStatus;
 import com.cems.Enums.ReservationItemStatus;
 import com.cems.Enums.ReservationStatus;
 import com.cems.Enums.UserRoles;
-import com.cems.Model.Equipment;
+import com.cems.Model.Display.ReservationDisplay;
 import com.cems.Model.EquipmentItem;
-import com.cems.Model.Location;
 import com.cems.Model.Request.ReservationCart;
-import com.cems.Model.Users;
-import com.cems.Utils.ParseUtil;
+import com.cems.Model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +19,7 @@ public class ReservationManager extends DatabaseManager {
 
     //TODO : try-with-resources for items
     //return error message
-    public ArrayList<String> createReservation(Users user, ArrayList<ReservationCart> cart, int locationID, Timestamp startDateTime, Timestamp endDateTime){
+    public ArrayList<String> createReservation(User user, ArrayList<ReservationCart> cart, int locationID, Timestamp startDateTime, Timestamp endDateTime){
         ArrayList<String> errorsItems = new ArrayList<>();
         //i am lazy to create another object
         ArrayList<Integer> items = new ArrayList<Integer>();
@@ -125,5 +123,13 @@ public class ReservationManager extends DatabaseManager {
             e.printStackTrace();
         }
         return errorsItems;
+    }
+
+    public ReservationDisplay getReservations(User user) {
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id WHERE user_id = ? INNER JOIN location ON location.location_id = reservation.destination_id";
+        ReservationDisplay reservationDisplay = new ReservationDisplay();
+        ArrayList<ReservationDisplay> reservations = new ArrayList<>();
+
+        return reservationDisplay;
     }
 }
