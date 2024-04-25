@@ -1,5 +1,6 @@
 package com.cems.Servlet.Equipment;
 
+import com.cems.Enums.ReservationItemStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Exceptions.*;
 import com.cems.Model.Display.EquipmentDisplay;
