@@ -7,12 +7,10 @@ import com.cems.Enums.UserRoles;
 import com.cems.Model.Display.ReservationDisplay;
 import com.cems.Model.EquipmentItem;
 import com.cems.Model.Request.ReservationCart;
+import com.cems.Model.Reservations;
 import com.cems.Model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ReservationManager extends DatabaseManager {
@@ -126,10 +124,57 @@ public class ReservationManager extends DatabaseManager {
     }
 
     public ReservationDisplay getReservations(User user) {
-        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id WHERE user_id = ? INNER JOIN location ON location.location_id = reservation.destination_id";
-        ReservationDisplay reservationDisplay = new ReservationDisplay();
-        ArrayList<ReservationDisplay> reservations = new ArrayList<>();
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id WHERE user_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, user.getUserId());
+            ResultSet resultSet = statement.executeQuery();
+            return getReservationDisplay(resultSet);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public ReservationDisplay getReservationAdmin() {
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id";
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            return getReservationDisplay(resultSet);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ReservationDisplay getReservationDisplay(ResultSet resultSet) throws SQLException {
+        ArrayList<Reservations> waitingTOoApprove = new ArrayList<>();
+        ArrayList<Reservations> approved = new ArrayList<>();
+        ArrayList<Reservations> active = new ArrayList<>();
+        ArrayList<Reservations> completed = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Reservations reservations = Reservations.create(resultSet);
+            switch (reservations.getStatus()) {
+                case PENDING:
+                    waitingTOoApprove.add(reservations);
+                    break;
+                case APPROVED:
+                    approved.add(reservations);
+                    break;
+                case ACTIVE:
+                    active.add(reservations);
+                    break;
+                default:
+                    completed.add(reservations);
+            }
+        }
+        ReservationDisplay reservationDisplay = new ReservationDisplay();
+        reservationDisplay.setActive(active);
+        reservationDisplay.setWaitingToApprove(waitingTOoApprove);
+        reservationDisplay.setApproved(approved);
+        reservationDisplay.setCompleted(completed);
         return reservationDisplay;
     }
 }

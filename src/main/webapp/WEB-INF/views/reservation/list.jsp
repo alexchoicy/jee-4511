@@ -1,3 +1,6 @@
+<%@ page import="com.cems.Model.Display.ReservationDisplay" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.cems.Model.Reservations" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,71 +12,100 @@
             crossorigin="anonymous"></script>
 </head>
 <body class="bg-light">
-<%@include file="../Components/Nav.jsp"%>
+<%@include file="../Components/Nav.jsp" %>
+<%@ taglib prefix="res" uri="/WEB-INF/tlds/cems_reservations_tags.tld" %>
+<%
+    ReservationDisplay reservationDisplay = (ReservationDisplay) request.getAttribute("reservations");
+%>
 <br>
 <div class="container-fluid">
-  <div class="mt-5">
-    <div class="card mt-2">
-      <div class="card-header bg-primary text-white">
-        Waiting to Approve
-      </div>
-      <div class="card-body">
-        <table
-                class="table table-striped table-hover text-center"
-        >
-          <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Created Date</th>
-          </tr>
-          </thead>
-          <tbody id="waitingToApproveBody"></tbody>
-        </table>
-      </div>
-    </div>
+    <div class="mt-5">
+        <div class="card mt-2">
+            <div class="card-header bg-primary text-white">
+                Waiting to Approve
+            </div>
+            <div class="card-body">
+                <table
+                        class="table table-striped table-hover text-center"
+                >
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="waitingToApproveBody">
+                        <res:reservationsList reservations="<%= reservationDisplay.getWaitingToApprove()%>"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <div class="card-header bg-success text-white">Approved</div>
+            <div class="card-body">
+                <table
+                        class="table table-striped table-hover text-center"
+                >
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="approvedBody">
+                        <res:reservationsList reservations="<%= reservationDisplay.getApproved()%>"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <div class="card-header bg-success text-white">Active</div>
+            <div class="card-body">
+                <table
+                        class="table table-striped table-hover text-center"
+                >
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="activeBody">
+                        <res:reservationsList reservations="<%= reservationDisplay.getActive()%>"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <div class="card mt-2">
-      <div class="card-header bg-success text-white">Active</div>
-      <div class="card-body">
-        <table
-                class="table table-striped table-hover text-center"
-        >
-          <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Created Date</th>
-          </tr>
-          </thead>
-          <tbody id="activeBody"></tbody>
-        </table>
-      </div>
+        <div class="card mt-2">
+            <div class="card-header bg-secondary text-white">
+                History
+            </div>
+            <div class="card-body">
+                <table
+                        class="table table-striped table-hover text-center"
+                >
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Created Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <res:reservationsList reservations="<%= reservationDisplay.getCompleted()%>"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-
-    <div class="card mt-2">
-      <div class="card-header bg-secondary text-white">
-        History
-      </div>
-      <div class="card-body">
-        <table
-                class="table table-striped table-hover text-center"
-        >
-          <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
-            <th scope="col">Created Date</th>
-          </tr>
-          </thead>
-          <tbody id="historyBody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 </div>
 </body>
 </html>

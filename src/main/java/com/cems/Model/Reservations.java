@@ -77,7 +77,7 @@ public class Reservations implements Serializable {
         reservation.setId(resultSet.getInt("reservation_id"));
         reservation.setStartTime(resultSet.getTimestamp("start_time"));
         reservation.setEndTime(resultSet.getTimestamp("end_time"));
-        reservation.setCreatedAt(resultSet.getTimestamp("created_at"));
+        reservation.setCreatedAt(resultSet.getTimestamp("CreatedAt"));
         reservation.setStatus(ReservationStatus.getStatus(resultSet.getInt("status")));
         reservation.setDestination(Location.create(resultSet));
         reservation.setUser(User.create(resultSet));
