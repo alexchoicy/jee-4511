@@ -22,7 +22,7 @@
                     <a class="nav-link" href="wishList.html">Wish List</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="booking.html">Booking</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/reservations">Reservations</a>
                 </li>
                 <% if (userBean.getRole() == UserRoles.ADMIN) { %>
                 <li class="nav-item">
