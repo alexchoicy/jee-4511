@@ -6,10 +6,12 @@ import com.cems.Enums.ReservationStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Model.Display.ReservationDisplay;
 import com.cems.Model.EquipmentItem;
+import com.cems.Model.Location;
 import com.cems.Model.Request.ReservationCart;
 import com.cems.Model.Reservations;
 import com.cems.Model.User;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -176,5 +178,35 @@ public class ReservationManager extends DatabaseManager {
         reservationDisplay.setApproved(approved);
         reservationDisplay.setCompleted(completed);
         return reservationDisplay;
+    }
+
+    public Reservations getReservation(int recordID) throws SQLException, IOException, ClassNotFoundException {
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id INNER JOIN reservation_items ON reservation.reservation_id = reservation_items.reservation_id INNER JOIN equipment_item ON reservation_items.equipment_item_id = equipment_item.equipment_item_id INNER JOIN equipment ON equipment_item.equipment_id = equipment.equipment_id WHERE reservation.reservation_id = ?";
+        try(Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, recordID);
+            ResultSet resultSet = statement.executeQuery();
+            Reservations reservation = new Reservations();
+            ArrayList<EquipmentItem> items = new ArrayList<>();
+            while (resultSet.next()) {
+                reservation.setId(resultSet.getInt("reservation_id"));
+                reservation.setStartTime(resultSet.getTimestamp("start_time"));
+                reservation.setEndTime(resultSet.getTimestamp("end_time"));
+                reservation.setCreatedAt(resultSet.getTimestamp("CreatedAt"));
+                reservation.setStatus(ReservationStatus.getStatus(resultSet.getInt("status")));
+                reservation.setCheckin_time(resultSet.getTimestamp("checkin_time"));
+                reservation.setCheckout_time(resultSet.getTimestamp("checkout_time"));
+                reservation.setDestination(Location.create(resultSet));
+                reservation.setUser(User.create(resultSet));
+                EquipmentItem item = new EquipmentItem();
+                item.setId(resultSet.getInt("equipment_id"));
+                item.setEquipmentName(resultSet.getString("equipment_name"));
+                item.setEquipmentId(resultSet.getInt("equipment_item_id"));
+                item.setSerialNumber(resultSet.getString("serial_number"));
+                items.add(item);
+            }
+            reservation.setItems(items);
+            return reservation;
+        }
     }
 }
