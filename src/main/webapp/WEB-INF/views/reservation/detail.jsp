@@ -1,3 +1,6 @@
+<%@ page import="com.cems.Model.Reservations" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.cems.Model.EquipmentItem" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,75 +12,100 @@
             crossorigin="anonymous"></script>
 </head>
 <body class="bg-light">
-<%@include file="../Components/Nav.jsp"%>
+<%@include file="../Components/Nav.jsp" %>
+<% Reservations reservation = (Reservations) request.getAttribute("reservation");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+%>
 <br>
 <div class="d-flex justify-content-end m-2">
-  <button class="btn btn-success m-2">Approve</button>
-  <button class="btn btn-danger m-2">Deliced</button>
-  <button class="btn btn-primary m-2">Check out</button>
-  <button class="btn btn-primary m-2">Return</button>
+    <button class="btn btn-success m-2">Approve</button>
+    <button class="btn btn-danger m-2">Deliced</button>
+    <button class="btn btn-primary m-2">Check out</button>
+    <button class="btn btn-primary m-2">Return</button>
 </div>
 
 <div class="container-fluid m-5">
-  <div class="row">
-    <div class="col-11 rounded-1 bg-white my-3 p-1">
-      <div class="row p-3">
-        <div class="col-lg-8">
-          <div class="row">
-            <div class="col">Reservation User Name :</div>
-            <div class="col">
-              <div>USER NAME</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Location</div>
-            <div class="col">
-              <div>LOCATION</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Start Time</div>
-            <div class="col">
-              <div>DATE TIME</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">End Time</div>
-            <div class="col">
-              <div>DATE TIME</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Check out Time</div>
-            <div class="col">
-              <div>DATE TIME</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">Return Time</div>
-            <div class="col">
-              <div>DATE TIME</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="row">
-      <div class="col-11 rounded-1 bg-white my-3 p-1">
-        <div class="p-3">
-          <table class="table text-center">
-            <thead>
-            <tr>
-              <th scope="col">Item ID</th>
-              <th scope="col">Item Name</th>
-              <th scope="col">Request Quantity</th>
-            </tr>
-            </thead>
-          </table>
+        <div class="col-11 rounded-1 bg-white my-3 p-1">
+            <div class="row p-3">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col">Reservation Name :</div>
+                        <div class="col">
+                            <div><%= reservation.getUser().getFirstName() + " " + reservation.getUser().getLastName()%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Location</div>
+                        <div class="col">
+                            <div><%= reservation.getDestination().getName()%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Start Time</div>
+                        <div class="col">
+                            <div><%= sdf.format(reservation.getStartTime())%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">End Time</div>
+                        <div class="col">
+                            <div><%= sdf.format(reservation.getEndTime())%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Check out Time</div>
+                        <div class="col">
+                            <div><%= reservation.getCheckin_time() == null ? "Haven't pick up yet" : sdf.format(reservation.getCheckin_time())%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Return Time</div>
+                        <div class="col">
+                            <div><%= reservation.getCheckout_time() == null ? "Haven't Return yet" : sdf.format(reservation.getCheckout_time())%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="row">
+            <div class="col-11 rounded-1 bg-white my-3 p-1">
+                <div class="p-3">
+                    <table class="table text-center">
+                        <thead>
+                        <tr>
+                            <th scope="col">Item ID</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Item Serial Number</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (EquipmentItem item : reservation.getItems()) {%>
+                        <tr>
+                            <td>
+                                <%= item.getId()%>
+                            </td>
+                            <td>
+                                <%= item.getEquipmentName()%>
+                            </td>
+                            <td>
+                                <%= item.getSerialNumber()%>
+                            </td>
+                        </tr>
+
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>
