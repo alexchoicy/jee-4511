@@ -43,7 +43,7 @@ public class CreateReservation extends HttpServlet {
         String value = CookieUtils.getCookie(req, "reservationCart");
         ArrayList<ReservationCart> cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>() {
         }.getType());
-        if(cart.isEmpty() || cart == null) {
+        if(cart == null || cart.isEmpty()) {
             ArrayList<String> errors = new ArrayList<>();
             errors.add("Please Add Item the your Reservation Cart");
             req.setAttribute("errors", errors);

@@ -209,4 +209,85 @@ public class ReservationManager extends DatabaseManager {
             return reservation;
         }
     }
+
+    public boolean approveReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.APPROVED.getValue());
+            statement.setInt(2, recordID);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean declineReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.REJECTED.getValue());
+            statement.setInt(2, recordID);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkInReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ?, checkin_time = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.ACTIVE.getValue());
+            statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(3, recordID);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkOutReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ?, checkout_time = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.FINISHED.getValue());
+            statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(3, recordID);
+            statement.executeUpdate();
+
+            releaseItem(recordID);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void releaseItem(int recordID) {
+        String getItemsQuery = "SELECT equipment_item_id FROM reservation_items WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(getItemsQuery);
+            statement.setInt(1, recordID);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int itemID = resultSet.getInt("equipment_item_id");
+                String releaseItemQuery = "UPDATE equipment_item SET status = ? WHERE equipment_item_id = ?";
+                PreparedStatement releaseItemStatement = connection.prepareStatement(releaseItemQuery);
+                releaseItemStatement.setInt(1, ItemStatus.AVAILABLE.getValue());
+                releaseItemStatement.setInt(2, itemID);
+                releaseItemStatement.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
