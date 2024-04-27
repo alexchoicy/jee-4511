@@ -8,7 +8,8 @@ public enum ReservationStatus {
     APPROVED(2, "Approved"),
     ACTIVE(3, "Active"),
     FINISHED(4, "Finished"),
-    CANCELED(5, "Canceled");
+    CANCELED(5, "Canceled"),
+    REJECTED(6, "Rejected");
     private final int value;
     private final String displayValue;
     private static final HashMap<Integer, ReservationStatus> map = new HashMap<>();

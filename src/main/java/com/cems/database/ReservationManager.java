@@ -6,10 +6,12 @@ import com.cems.Enums.ReservationStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Model.Display.ReservationDisplay;
 import com.cems.Model.EquipmentItem;
+import com.cems.Model.Location;
 import com.cems.Model.Request.ReservationCart;
 import com.cems.Model.Reservations;
 import com.cems.Model.User;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -176,5 +178,117 @@ public class ReservationManager extends DatabaseManager {
         reservationDisplay.setApproved(approved);
         reservationDisplay.setCompleted(completed);
         return reservationDisplay;
+    }
+
+    public Reservations getReservation(int recordID) throws SQLException, IOException, ClassNotFoundException {
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id INNER JOIN reservation_items ON reservation.reservation_id = reservation_items.reservation_id INNER JOIN equipment_item ON reservation_items.equipment_item_id = equipment_item.equipment_item_id INNER JOIN equipment ON equipment_item.equipment_id = equipment.equipment_id WHERE reservation.reservation_id = ?";
+        try(Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, recordID);
+            ResultSet resultSet = statement.executeQuery();
+            Reservations reservation = new Reservations();
+            ArrayList<EquipmentItem> items = new ArrayList<>();
+            while (resultSet.next()) {
+                reservation.setId(resultSet.getInt("reservation_id"));
+                reservation.setStartTime(resultSet.getTimestamp("start_time"));
+                reservation.setEndTime(resultSet.getTimestamp("end_time"));
+                reservation.setCreatedAt(resultSet.getTimestamp("CreatedAt"));
+                reservation.setStatus(ReservationStatus.getStatus(resultSet.getInt("status")));
+                reservation.setCheckin_time(resultSet.getTimestamp("checkin_time"));
+                reservation.setCheckout_time(resultSet.getTimestamp("checkout_time"));
+                reservation.setDestination(Location.create(resultSet));
+                reservation.setUser(User.create(resultSet));
+                EquipmentItem item = new EquipmentItem();
+                item.setId(resultSet.getInt("equipment_id"));
+                item.setEquipmentName(resultSet.getString("equipment_name"));
+                item.setEquipmentId(resultSet.getInt("equipment_item_id"));
+                item.setSerialNumber(resultSet.getString("serial_number"));
+                items.add(item);
+            }
+            reservation.setItems(items);
+            return reservation;
+        }
+    }
+
+    public boolean approveReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.APPROVED.getValue());
+            statement.setInt(2, recordID);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean declineReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.REJECTED.getValue());
+            statement.setInt(2, recordID);
+            statement.executeUpdate();
+            releaseItem(recordID);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkInReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ?, checkin_time = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.ACTIVE.getValue());
+            statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(3, recordID);
+            statement.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean checkOutReservation(int recordID) {
+        String sql = "UPDATE reservation SET status = ?, checkout_time = ? WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, ReservationStatus.FINISHED.getValue());
+            statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(3, recordID);
+            statement.executeUpdate();
+
+            releaseItem(recordID);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void releaseItem(int recordID) {
+        String getItemsQuery = "SELECT equipment_item_id FROM reservation_items WHERE reservation_id = ?";
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(getItemsQuery);
+            statement.setInt(1, recordID);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int itemID = resultSet.getInt("equipment_item_id");
+                String releaseItemQuery = "UPDATE equipment_item SET status = ? WHERE equipment_item_id = ?";
+                PreparedStatement releaseItemStatement = connection.prepareStatement(releaseItemQuery);
+                releaseItemStatement.setInt(1, ItemStatus.AVAILABLE.getValue());
+                releaseItemStatement.setInt(2, itemID);
+                releaseItemStatement.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

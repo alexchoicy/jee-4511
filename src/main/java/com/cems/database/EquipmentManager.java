@@ -383,7 +383,7 @@ public class EquipmentManager extends DatabaseManager {
         return null;
     }
   public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
-        String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN `4511`.equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
+        String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
                 " where equipment.equipment_id = ? GROUP BY equipment.equipment_id";
         ReservationCart cartItem = null;
 
