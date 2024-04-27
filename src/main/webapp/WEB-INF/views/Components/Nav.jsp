@@ -5,7 +5,7 @@
 %>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/">Rentai List</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">Reservation System</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -16,10 +16,7 @@
                     <a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="records.html">Recods</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="wishList.html">Wish List</a>
+                    <a class="nav-link" href="${pageContext.request.contextPath}/wishList">Wish List</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/reservations">Reservations</a>
@@ -27,6 +24,9 @@
                 <% if (userBean.getRole() == UserRoles.ADMIN) { %>
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/users">users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/damages">Damaged Report</a>
                 </li>
                 <% } %>
                 <div class="btn-group dropstart position-absolute top-10 end-0" style="margin-right: 20px;">
@@ -41,7 +41,8 @@
                     </button>
                     <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                        <%= String.format("%s %s", userBean.getFirstName(), userBean.getLastName())%>                    </button>
+                        <%= String.format("%s %s", userBean.getFirstName(), userBean.getLastName())%>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="${pageContext.request.contextPath}/update-info">Account
                             information</a></li>
