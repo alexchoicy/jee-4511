@@ -16,6 +16,14 @@
 <%@ taglib prefix="res" uri="/WEB-INF/tlds/cems_reservations_tags.tld" %>
 <%
     ReservationDisplay reservationDisplay = (ReservationDisplay) request.getAttribute("reservations");
+    // If the reservationDisplay is null, create a new one and set the lists to empty
+    if (reservationDisplay == null) {
+        reservationDisplay = new ReservationDisplay();
+        reservationDisplay.setActive(new ArrayList<Reservations>());
+        reservationDisplay.setApproved(new ArrayList<Reservations>());
+        reservationDisplay.setWaitingToApprove(new ArrayList<Reservations>());
+        reservationDisplay.setCompleted(new ArrayList<Reservations>());
+    }
 %>
 <br>
 <div class="container-fluid">
@@ -31,13 +39,14 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Start Date</th>
                         <th scope="col">End Date</th>
                         <th scope="col">Created Date</th>
                     </tr>
                     </thead>
                     <tbody id="waitingToApproveBody">
-                        <res:reservationsList reservations="<%= reservationDisplay.getWaitingToApprove()%>"/>
+                    <res:reservationsList reservations="<%= reservationDisplay.getWaitingToApprove()%>"/>
                     </tbody>
                 </table>
             </div>
@@ -51,13 +60,14 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Start Date</th>
                         <th scope="col">End Date</th>
                         <th scope="col">Created Date</th>
                     </tr>
                     </thead>
                     <tbody id="approvedBody">
-                        <res:reservationsList reservations="<%= reservationDisplay.getApproved()%>"/>
+                    <res:reservationsList reservations="<%= reservationDisplay.getApproved()%>"/>
                     </tbody>
                 </table>
             </div>
@@ -71,13 +81,14 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Start Date</th>
                         <th scope="col">End Date</th>
                         <th scope="col">Created Date</th>
                     </tr>
                     </thead>
                     <tbody id="activeBody">
-                        <res:reservationsList reservations="<%= reservationDisplay.getActive()%>"/>
+                    <res:reservationsList reservations="<%= reservationDisplay.getActive()%>"/>
                     </tbody>
                 </table>
             </div>
@@ -94,13 +105,14 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Start Date</th>
                         <th scope="col">End Date</th>
                         <th scope="col">Created Date</th>
                     </tr>
                     </thead>
                     <tbody id="historyBody">
-                        <res:reservationsList reservations="<%= reservationDisplay.getCompleted()%>"/>
+                    <res:reservationsList reservations="<%= reservationDisplay.getCompleted()%>"/>
                     </tbody>
                 </table>
             </div>
