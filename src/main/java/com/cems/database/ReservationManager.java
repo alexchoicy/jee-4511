@@ -231,6 +231,7 @@ public class ReservationManager extends DatabaseManager {
             statement.setInt(1, ReservationStatus.REJECTED.getValue());
             statement.setInt(2, recordID);
             statement.executeUpdate();
+            releaseItem(recordID);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
