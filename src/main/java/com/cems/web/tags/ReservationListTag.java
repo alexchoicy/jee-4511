@@ -22,6 +22,9 @@ public class ReservationListTag extends SimpleTagSupport {
 
     @Override
     public void doTag() {
+        if (reservations == null) {
+            return;
+        }
         HttpServletRequest request = (HttpServletRequest) getJspContext().findAttribute("javax.servlet.jsp.jspRequest");
         String contextPath = request.getContextPath();
         try {
@@ -30,6 +33,7 @@ public class ReservationListTag extends SimpleTagSupport {
             for (Reservations reservation :reservations) {
                 options.append("<tr>");
                 options.append("<td>").append(reservation.getId()).append("</td>");
+                options.append("<td>").append(reservation.getStatus().getDisplayValue()).append("</td>");
                 options.append("<td>").append(sdf.format(reservation.getStartTime())).append("</td>");
                 options.append("<td>").append(sdf.format(reservation.getEndTime())).append("</td>");
                 options.append("<td>").append(sdf.format(reservation.getCreatedAt())).append("</td>");
