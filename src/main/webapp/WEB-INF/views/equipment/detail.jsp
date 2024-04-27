@@ -169,6 +169,22 @@
             alert(error.message);
         });
     }
+
+    function addToWishList() {
+        const url = "${pageContext.request.contextPath}/wishList/add?id=<%= equipment.getId() %>";
+        fetch(url, {
+            method: "GET"
+        })
+            .then(() => window.location.reload(true));
+    }
+
+    function removeWishListed() {
+        const url = "${pageContext.request.contextPath}/wishList/remove?id=<%= equipment.getId() %>";
+        fetch(url, {
+            method: "GET"
+        })
+            .then(() => window.location.reload(true));
+    }
 </script>
 
 <body class="bg-light">
@@ -179,6 +195,16 @@
             class="d-flex justify-content-between align-items-center p-3 pb-2 mb-3 border-bottom">
         <h2 class="h2">Equipment Detail</h2>
         <div class="btn-toolbar mb-2 mb-md-0">
+            <% if (equipment.isWishListed()) {
+            %>
+            <button class="btn btn-danger mx-2" onclick="removeWishListed()">
+                Remove from Wishlist
+            </button>
+            <% } else { %>
+            <button class="btn btn-primary mx-2" onclick="addToWishList()">
+                Add to Wishlist
+            </button>
+            <% } %>
             <% if (user.getRole() == UserRoles.ADMIN) { %>
             <button type="button" class="btn btn-danger mx-2"
                     data-bs-toggle="modal" data-bs-target="#RemoveModal">
