@@ -198,7 +198,8 @@ public class EquipmentDetailServlet extends HttpServlet {
             if (addNewItem && editStatus) {
                 response.sendRedirect(request.getContextPath() + "/equipment/" + equipmentId);
             } else {
-                EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(equipmentId);
+                User user = (User) request.getSession().getAttribute("user");
+                EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(user.getUserId(), equipmentId);
                 request.setAttribute("equipmentDisplay", equipmentDisplay);
                 request.getRequestDispatcher("/WEB-INF/views/equipment/editDetail.jsp").forward(request, response);
             }
@@ -410,7 +411,8 @@ public class EquipmentDetailServlet extends HttpServlet {
     }
 
     private void EditEquipment(HttpServletRequest request, HttpServletResponse response, int equipmentId) {
-        EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(equipmentId);
+        User user = (User) request.getSession().getAttribute("user");
+        EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(user.getUserId(), equipmentId);
 
         if (equipmentDisplay == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -427,7 +429,8 @@ public class EquipmentDetailServlet extends HttpServlet {
     }
 
     private void GetEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws ServletException, IOException {
-        EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(equipmentId);
+        User user = (User) request.getSession().getAttribute("user");
+        EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(user.getUserId(), equipmentId);
 
         if (equipmentDisplay == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

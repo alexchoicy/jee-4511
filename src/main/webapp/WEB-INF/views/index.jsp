@@ -13,8 +13,8 @@
 </head>
 <script>
     let response_data;
-    const fetchData = async (searchText = "") => {
-        const url = '${pageContext.request.contextPath}/equipment?searchText=' + searchText;
+    const fetchData = async (searchText = "", showAvailableOnly = false) => {
+        const url = '${pageContext.request.contextPath}/equipment?searchText=' + searchText + '&showAvailableOnly=' + showAvailableOnly;
         const response = await fetch(url);
         const data = await response.json();
         console.log(data);
@@ -27,6 +27,12 @@
         const searchText = document.getElementById("searchText").value;
         console.log(searchText);
         fetchData(searchText);
+    }
+
+    // ?????????????????
+    function onShowAvailableOnlyChange(e) {
+        const showAvailableOnly = e.target.checked;
+        fetchData("", showAvailableOnly);
     }
 
     const createCheckbox = (value) => {
@@ -65,7 +71,15 @@
 <body class="bg-light">
 <%@include file="Components/Nav.jsp" %>
 
-<div class="d-flex justify-content-end">
+<div class="d-flex justify-content-between">
+    <div class="form-check form-switch" style="margin-left: 20px; margin-top: 10px"
+    >
+        <input class="form-check-input" type="checkbox" id="showAvailableOnly"
+               onchange="onShowAvailableOnlyChange(event)">
+        <label class="form-check
+        -label" for="showAvailableOnly">Show Available Only</label>
+    </div>
+
     <form
             class="d-flex"
             role="search"

@@ -3,8 +3,11 @@ package com.cems.database;
 import com.cems.Enums.ItemStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Exceptions.*;
-import com.cems.Model.*;
 import com.cems.Model.Display.EquipmentDisplay;
+import com.cems.Model.Equipment;
+import com.cems.Model.EquipmentItem;
+import com.cems.Model.Location;
+import com.cems.Model.PagedResult;
 import com.cems.Model.Request.CreateEquipmentItem;
 import com.cems.Model.Request.ReservationCart;
 import com.cems.Utils.ParseUtil;
@@ -78,8 +81,8 @@ public class EquipmentManager extends DatabaseManager {
             countStatement.setInt(countIndex++, userId);
 
             if (showAvailableOnly) {
-                searchStatement.setString(index++, ItemStatus.AVAILABLE.name());
-                countStatement.setString(countIndex++, ItemStatus.AVAILABLE.name());
+                searchStatement.setInt(index++, ItemStatus.AVAILABLE.getValue());
+                countStatement.setInt(countIndex++, ItemStatus.AVAILABLE.getValue());
             }
 
             if (roles != UserRoles.USER && showStaffOnly) {
@@ -145,11 +148,12 @@ public class EquipmentManager extends DatabaseManager {
         return null;
     }
 
-    public EquipmentDisplay getEquipmentDetail(int equipmentId) {
-        String sql = "SELECT * FROM equipment LEFT JOIN equipment_item ON equipment.equipment_id = equipment_item.equipment_id LEFT JOIN location ON equipment_item.current_location = location.location_id WHERE equipment.equipment_id = ?";
+    public EquipmentDisplay getEquipmentDetail(int user_id,int equipmentId) {
+        String sql = "SELECT *, CASE WHEN w.wishlist_id IS NOT NULL THEN TRUE ELSE FALSE END as isWishlisted FROM equipment LEFT JOIN equipment_item ON equipment.equipment_id = equipment_item.equipment_id LEFT JOIN wishlist_items w ON equipment.equipment_id = w.equipment_id AND w.user_id = ? LEFT JOIN location ON equipment_item.current_location = location.location_id WHERE equipment.equipment_id = ?";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, equipmentId);
+            statement.setInt(1,user_id );
+            statement.setInt(2, equipmentId);
 
             EquipmentDisplay equipmentDisplay = new EquipmentDisplay();
             Equipment equipment = new Equipment();
@@ -165,6 +169,7 @@ public class EquipmentManager extends DatabaseManager {
                         equipment.setStaffOnly(resultSet.getBoolean("isStaffOnly"));
                         equipment.setListed(resultSet.getBoolean("isListed"));
                         equipment.setImagePath(resultSet.getString("image_path"));
+                        equipment.setWishListed(resultSet.getBoolean("isWishlisted"));
                     }
 
                     EquipmentItem item = new EquipmentItem();
@@ -382,7 +387,8 @@ public class EquipmentManager extends DatabaseManager {
         }
         return null;
     }
-  public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
+
+    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
         String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
                 " where equipment.equipment_id = ? GROUP BY equipment.equipment_id";
         ReservationCart cartItem = null;
