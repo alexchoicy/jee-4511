@@ -273,6 +273,8 @@ public class EquipmentManager extends DatabaseManager {
     public boolean deleteEquipment(int equipmentId) throws SQLException, IOException, ClassNotFoundException, HasItemsException, EquipmentNotFoundException {
         String countSql = "SELECT COUNT(*) FROM equipment_item WHERE equipment_id = ?";
         String deleteSql = "DELETE FROM equipment WHERE equipment_id = ?";
+        String removeWishListedSql = "DELETE FROM wishlist_items WHERE equipment_id = ?";
+
         Connection connection = getConnection();
         PreparedStatement countStatement = connection.prepareStatement(countSql);
         countStatement.setInt(1, equipmentId);
@@ -281,6 +283,11 @@ public class EquipmentManager extends DatabaseManager {
         if (countResultSet.getInt(1) > 0) {
             throw new HasItemsException(equipmentId);
         }
+
+        PreparedStatement removeWishListedStatement = connection.prepareStatement(removeWishListedSql);
+        removeWishListedStatement.setInt(1, equipmentId);
+        removeWishListedStatement.executeUpdate();
+
         PreparedStatement deleteStatement = connection.prepareStatement(deleteSql);
         deleteStatement.setInt(1, equipmentId);
         int result = deleteStatement.executeUpdate();
@@ -429,5 +436,17 @@ public class EquipmentManager extends DatabaseManager {
             e.printStackTrace();
         }
         return items;
+    }
+
+    public void saveImage(int equipmentId, String imagePath) {
+        String sql = "UPDATE equipment SET image_path = ? WHERE equipment_id = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, imagePath);
+            statement.setInt(2, equipmentId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

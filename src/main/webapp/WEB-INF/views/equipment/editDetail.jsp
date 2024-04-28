@@ -286,6 +286,16 @@
             </button>
         </div>
     </div>
+    <form action="${pageContext.request.contextPath}/uploadResources" method="post"
+          id="imageForm"
+          enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<%=equipment.getId()%>">
+        <div class="d-flex justify-content-center">
+            <label for="image" class="px-2">Upload a image for equipment</label>
+            <input type="file" id="image" name="file" accept="image/*">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+    </form>
     <form id="mainForm" onsubmit="return onUpdateSubmit(event)">
         <input type="hidden" name="numberOfNewItems" value="0"
                id="numberOfNewItems">
