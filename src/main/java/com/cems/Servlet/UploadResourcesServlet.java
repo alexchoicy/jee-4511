@@ -51,8 +51,7 @@ public class UploadResourcesServlet extends HttpServlet {
         }
 
         equipmentManager.saveImage(equipmentId, "resources/images/equipments/" + newName + extension);
-        PrintWriter out = resp.getWriter();
-        out.println("success");
+        resp.sendRedirect(req.getContextPath() + "/equipment/" + equipmentId);
     }
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");

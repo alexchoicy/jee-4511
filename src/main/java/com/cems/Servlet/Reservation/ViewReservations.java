@@ -31,7 +31,7 @@ public class ViewReservations extends HttpServlet {
         }
         User user = (User) request.getSession().getAttribute("user");
         ReservationDisplay reservationDisplay;
-        if (user.getRole() == UserRoles.ADMIN) {
+        if (user.getRole() == UserRoles.ADMIN || user.getRole() == UserRoles.TECHNICIAN) {
             reservationDisplay = reservationManager.getReservationAdmin();
         } else {
             reservationDisplay = reservationManager.getReservations(user);

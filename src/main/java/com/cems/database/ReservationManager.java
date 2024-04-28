@@ -126,7 +126,7 @@ public class ReservationManager extends DatabaseManager {
     }
 
     public ReservationDisplay getReservations(User user) {
-        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id WHERE user_id = ?";
+        String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id WHERE reservation.user_id = ?";
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, user.getUserId());

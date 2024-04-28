@@ -14,8 +14,7 @@
       let end_date = document.getElementById('end_date').value;
       let id = document.getElementById('id').value;
       console.log(start_date, end_date, id);
-      const url = '${pageContext.request.contextPath}/analytics/viewEquipment?id=' + id + '&start_date=' + start_date + '&end_date=' + end_date;
-      console.log(url);
+      location.href = '${pageContext.request.contextPath}/analytics/viewEquipment?id=' + id + '&start_date=' + start_date + '&end_date=' + end_date
     }
   </script>
 </head>
