@@ -28,6 +28,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/damages">Damaged Report</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/analytics">Analytics</a>
+                </li>
                 <% } %>
                 <div class="btn-group dropstart position-absolute top-10 end-0" style="margin-right: 20px;">
                     <button
