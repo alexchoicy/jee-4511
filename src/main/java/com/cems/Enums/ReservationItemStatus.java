@@ -4,7 +4,8 @@ import java.util.HashMap;
 
 public enum ReservationItemStatus {
     NEED_DELIVERY(1),
-    ARRIVED(2);
+    ARRIVED(2),
+    HAVE_DELIVERY_ORDER(3);
 
     private final int value;
 
