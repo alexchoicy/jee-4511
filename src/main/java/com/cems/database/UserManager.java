@@ -36,6 +36,34 @@ public class UserManager extends DatabaseManager {
         return null;
     }
 
+    public ArrayList<User> getDeliveryName() {
+        try (Connection connection = getConnection()) {
+            String sql = "SELECT * FROM user WHERE role = 4";
+            System.out.println("sql: " + sql);
+            Statement statement = connection.createStatement();
+
+            boolean results = statement.execute(sql);
+            System.out.println("results: " + results);
+            if (!results) {
+                return null;
+            }
+            ResultSet resultSet = statement.getResultSet();
+            ArrayList<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                User user = GetUserDataToBean(resultSet);
+                users.add(user);
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+            return users;
+        } catch (Exception e) {
+            // e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
     public User Login(String username, String password) {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user WHERE username = ? AND password = ?;";
@@ -109,7 +137,7 @@ public class UserManager extends DatabaseManager {
             createStatement.setString(5, user.getLastName());
             createStatement.setInt(6, user.getRole().getValue());
             int rowsAffected = createStatement.executeUpdate();
-            
+
             ResultSet generatedKeys = createStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int generatedUserId = generatedKeys.getInt(1);
@@ -122,7 +150,7 @@ public class UserManager extends DatabaseManager {
         }
         return false;
     }
-    
+
     public boolean EditUser(User user) {
         try (Connection connection = getConnection()) {
             String checkSql = "SELECT COUNT(*) FROM user WHERE username = ? AND user_id != ?;;";
@@ -164,7 +192,7 @@ public class UserManager extends DatabaseManager {
         user.setRole(UserRoles.getRole(resultSet.getInt("role")));
         return user;
     }
-    
+
     public boolean RemoveUser(User user) {
         try (Connection connection = getConnection()) {
             String removeSql = "DELETE FROM user WHERE username = ?;";

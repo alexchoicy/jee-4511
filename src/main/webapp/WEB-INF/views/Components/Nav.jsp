@@ -32,6 +32,11 @@
                     <a class="nav-link" href="${pageContext.request.contextPath}/analytics">Analytics</a>
                 </li>
                 <% } %>
+                <% if (userBean.getRole() == UserRoles.ADMIN || userBean.getRole() == UserRoles.COURIER) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/deliveryList">Delivery List</a>
+                </li>
+                <% } %>
                 <div class="btn-group dropstart position-absolute top-10 end-0" style="margin-right: 20px;">
                     <button
                             class="btn btn-white border border-secondary px-3"

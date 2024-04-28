@@ -151,7 +151,6 @@ public class CreateReservation extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/reservations");
             return;
         }
-z
         req.setAttribute("errors", errorMessage);
 
         req.getRequestDispatcher("/WEB-INF/views/reservation/create.jsp").forward(req, resp);

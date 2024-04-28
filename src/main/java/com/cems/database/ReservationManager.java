@@ -17,18 +17,19 @@ import java.util.ArrayList;
 
 public class ReservationManager extends DatabaseManager {
 
-    //TODO : try-with-resources for items
-    //return error message
-    public ArrayList<String> createReservation(User user, ArrayList<ReservationCart> cart, int locationID, Timestamp startDateTime, Timestamp endDateTime){
+    // TODO : try-with-resources for items
+    // return error message
+    public ArrayList<String> createReservation(User user, ArrayList<ReservationCart> cart, int locationID,
+            Timestamp startDateTime, Timestamp endDateTime) {
         ArrayList<String> errorsItems = new ArrayList<>();
-        //i am lazy to create another object
+        // i am lazy to create another object
         ArrayList<Integer> items = new ArrayList<Integer>();
         ArrayList<ReservationItemStatus> items_status = new ArrayList<>();
         String searchQuery = "SELECT * FROM equipment_item INNER JOIN equipment ON equipment.equipment_id = ? WHERE equipment_item.equipment_id = ? AND status = 1 ORDER BY CASE WHEN current_location = ? THEN 0 ELSE 1 END, current_location DESC";
 
-        try (Connection connection = getConnection()){
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
-            for (ReservationCart cartItem : cart){
+            for (ReservationCart cartItem : cart) {
                 PreparedStatement statement = connection.prepareStatement(searchQuery);
 
                 statement.setInt(1, cartItem.getEquipmentID());
@@ -50,16 +51,18 @@ public class ReservationManager extends DatabaseManager {
                     equipments.add(item);
                 }
 
-                if(equipments.size() < cartItem.getQuantity()) {
-                    errorsItems.add(String.format("Item %s don't have Enough Request Quantity", cartItem.getEquipmentID()));
+                if (equipments.size() < cartItem.getQuantity()) {
+                    errorsItems.add(
+                            String.format("Item %s don't have Enough Request Quantity", cartItem.getEquipmentID()));
                     continue;
                 }
                 int itemcount = 0;
                 for (EquipmentItem equipment : equipments) {
-                    itemcount ++;
+                    itemcount++;
                     System.out.println("itemCount :" + itemcount + " , Request Quantity: " + cartItem.getQuantity());
                     if (!equipment.isListed()) {
-                        errorsItems.add(String.format("Item %s is not Listed to reservation", cartItem.getEquipmentID()));
+                        errorsItems
+                                .add(String.format("Item %s is not Listed to reservation", cartItem.getEquipmentID()));
                         continue;
                     }
 
@@ -76,7 +79,8 @@ public class ReservationManager extends DatabaseManager {
 
                     changeStatusStatement.executeUpdate();
                     items.add(equipment.getId());
-                    items_status.add(locationID == equipment.getCurrentLocation() ? ReservationItemStatus.ARRIVED : ReservationItemStatus.NEED_DELIVERY);
+                    items_status.add(locationID == equipment.getCurrentLocation() ? ReservationItemStatus.ARRIVED
+                            : ReservationItemStatus.NEED_DELIVERY);
                     if (itemcount == cartItem.getQuantity()) {
                         break;
                     }
@@ -89,7 +93,8 @@ public class ReservationManager extends DatabaseManager {
 
             String createReservationQuery = "INSERT INTO reservation (user_id, start_time, end_time, status, destination_id) VALUES (?, ?, ?, ?, ?)";
 
-            PreparedStatement createReservationStatement = connection.prepareStatement(createReservationQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement createReservationStatement = connection.prepareStatement(createReservationQuery,
+                    PreparedStatement.RETURN_GENERATED_KEYS);
 
             createReservationStatement.setInt(1, user.getUserId());
             createReservationStatement.setTimestamp(2, startDateTime);
@@ -110,7 +115,8 @@ public class ReservationManager extends DatabaseManager {
                 int itemID = items.get(i);
                 int item_status_value = items_status.get(i).getValue();
                 String createReservationItemQuery = "INSERT INTO reservation_items (reservation_id, equipment_item_id, reservation_items_status) VALUES (?, ?, ?)";
-                PreparedStatement createReservationItemStatement = connection.prepareStatement(createReservationItemQuery);
+                PreparedStatement createReservationItemStatement = connection
+                        .prepareStatement(createReservationItemQuery);
 
                 createReservationItemStatement.setInt(1, newId);
                 createReservationItemStatement.setInt(2, itemID);
@@ -132,7 +138,7 @@ public class ReservationManager extends DatabaseManager {
             statement.setInt(1, user.getUserId());
             ResultSet resultSet = statement.executeQuery();
             return getReservationDisplay(resultSet);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -144,7 +150,7 @@ public class ReservationManager extends DatabaseManager {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             return getReservationDisplay(resultSet);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
