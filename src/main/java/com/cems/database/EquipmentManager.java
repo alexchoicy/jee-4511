@@ -4,6 +4,7 @@ import com.cems.Enums.ItemStatus;
 import com.cems.Enums.UserRoles;
 import com.cems.Exceptions.*;
 import com.cems.Model.Display.EquipmentDisplay;
+import com.cems.Model.Display.ItemsOptions;
 import com.cems.Model.Equipment;
 import com.cems.Model.EquipmentItem;
 import com.cems.Model.Location;
@@ -410,5 +411,23 @@ public class EquipmentManager extends DatabaseManager {
             }
             return cartItem;
         }
+    }
+
+    public ArrayList<ItemsOptions> getItemsOptions() {
+        String sql = "SELECT equipment_id, equipment_name FROM equipment";
+        ArrayList<ItemsOptions> items = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                ItemsOptions item = new ItemsOptions();
+                item.setId(resultSet.getInt("equipment_id"));
+                item.setName(resultSet.getString("equipment_name"));
+                items.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 }

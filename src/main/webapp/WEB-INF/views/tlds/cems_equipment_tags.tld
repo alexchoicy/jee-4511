@@ -25,4 +25,9 @@
             <type>java.lang.Boolean</type>
         </attribute>
     </tag>
+    <tag>
+        <name>ItemsOptions</name>
+        <tag-class>com.cems.web.tags.ItemIDNameOptionsTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
 </taglib>
