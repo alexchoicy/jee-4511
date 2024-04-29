@@ -23,12 +23,12 @@ public class DeliveryManager extends DatabaseManager {
 
     public ArrayList<DeliveryDisplay> getDelivery() {
         try (Connection connection = getConnection()) {
-            String sql = "SELECT reservation_items.*,reservation.*,equipment_item.*,equipment.*,from_location.location_name AS from_location_name,to_location.location_name AS to_location_name FROM reservation_items INNER JOIN reservation ON reservation.reservation_id = reservation_items.reservation_id INNER JOIN equipment_item ON equipment_item.equipment_item_id = reservation_items.equipment_item_id INNER JOIN equipment ON equipment_item.equipment_id = equipment.equipment_id LEFT JOIN location AS  from_location ON equipment_item.current_location = from_location.location_id LEFT JOIN location AS to_location ON reservation.destination_id = to_location.location_id WHERE reservation_items_status = " + ReservationItemStatus.NEED_DELIVERY.getValue() + " ORDER BY equipment_item.current_location, reservation.destination_id;";
-            System.out.println("sql: " + sql);
+            String sql = "SELECT reservation_items.*,reservation.*,equipment_item.*,equipment.*,from_location.location_name AS from_location_name,to_location.location_name AS to_location_name FROM reservation_items INNER JOIN reservation ON reservation.reservation_id = reservation_items.reservation_id INNER JOIN equipment_item ON equipment_item.equipment_item_id = reservation_items.equipment_item_id INNER JOIN equipment ON equipment_item.equipment_id = equipment.equipment_id LEFT JOIN location AS  from_location ON equipment_item.current_location = from_location.location_id LEFT JOIN location AS to_location ON reservation.destination_id = to_location.location_id WHERE reservation_items_status = "
+                    + ReservationItemStatus.NEED_DELIVERY.getValue()
+                    + " ORDER BY equipment_item.current_location, reservation.destination_id;";
             Statement statement = connection.createStatement();
 
             boolean results = statement.execute(sql);
-            System.out.println("results: " + results);
             if (!results) {
                 return null;
             }
@@ -51,11 +51,9 @@ public class DeliveryManager extends DatabaseManager {
     public ArrayList<DeliveryDisplay> getDeliveryRecods() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM delivery_record;";
-            System.out.println("sql: " + sql);
             Statement statement = connection.createStatement();
 
             boolean results = statement.execute(sql);
-            System.out.println("results: " + results);
             if (!results) {
                 return null;
             }
@@ -100,7 +98,8 @@ public class DeliveryManager extends DatabaseManager {
     public boolean delegate(DeliveryDisplay newDelivery) {
         try (Connection connection = getConnection()) {
             String sql = "INSERT INTO delivery_record (delivery_by, delivery_date) VALUES (?, ?)";
-            PreparedStatement updateOrderStatusStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement updateOrderStatusStatement = connection.prepareStatement(sql,
+                    Statement.RETURN_GENERATED_KEYS);
             updateOrderStatusStatement.setInt(1, newDelivery.getCourier());
             updateOrderStatusStatement.setString(2, newDelivery.getDeadline());
             int rowsAffected = updateOrderStatusStatement.executeUpdate();
@@ -132,7 +131,7 @@ public class DeliveryManager extends DatabaseManager {
         }
         return false;
     }
-    
+
     public boolean updateArriveTime(DeliveryDisplay newDelivery) {
         try (Connection connection = getConnection()) {
             String sql = "UPDATE delivery_record SET arrive_datetime = ? WHERE delivery_id = ?";

@@ -25,12 +25,12 @@ import javax.servlet.http.HttpSession;
 public class CreateUserServlet extends HttpServlet {
 
     private UserManager userManager;
-    
+
     @Override
     public void init() {
         userManager = new UserManager();
     }
-    
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (!AuthUtils.isLogged(request)) {
@@ -46,7 +46,7 @@ public class CreateUserServlet extends HttpServlet {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
         requestDispatcher.forward(request, response);
     }
-    
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (!AuthUtils.isLogged(request)) {
@@ -56,25 +56,27 @@ public class CreateUserServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
-        if(!user.getRole().equals(UserRoles.ADMIN)){
+
+        if (!user.getRole().equals(UserRoles.ADMIN)) {
             response.sendRedirect(request.getContextPath());
         }
 
         request.setAttribute("user", user);
-        
+
         String username = request.getParameter("Username");
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String password = request.getParameter("Password");
         String passwordConfirm = request.getParameter("passwordConfirm");
         int roleNum = Integer.parseInt(request.getParameter("Role"));
-        
+
         UserRoles role = UserRoles.getRole(roleNum);
-        
+
         User newUser = new User();
-        
-        if (username.isEmpty() || username == null || firstName.isEmpty() || firstName == null || lastName.isEmpty() || lastName == null || password.isEmpty() || password == null || passwordConfirm.isEmpty() || passwordConfirm == null) {
+
+        if (username.isEmpty() || username == null || firstName.isEmpty() || firstName == null || lastName.isEmpty()
+                || lastName == null || password.isEmpty() || password == null || passwordConfirm.isEmpty()
+                || passwordConfirm == null) {
             request.setAttribute("noUsername", "You need to enter All the information");
             RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
             try {
@@ -84,7 +86,7 @@ public class CreateUserServlet extends HttpServlet {
             }
             return;
         }
-        
+
         newUser.setUsername(username);
         newUser.setFirstName(firstName);
         newUser.setLastName(lastName);
@@ -92,12 +94,9 @@ public class CreateUserServlet extends HttpServlet {
 
         if (!password.isEmpty()) {
             if (!password.equals(passwordConfirm) || passwordConfirm.isEmpty()) {
-                System.out.println("passwordDiff");
-                System.out.println("Diff " + password + " " + passwordConfirm);
-                System.out.println("newPasswordConfirm: [" + passwordConfirm + "]");
                 request.setAttribute("passwordDiff", "The new password is different. Please check again.");
-                System.out.println("newPassword: [" + password + "]");
-                RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
+                RequestDispatcher requestDispatcher = request
+                        .getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
                 try {
                     requestDispatcher.forward(request, response);
                 } catch (Exception e) {
@@ -109,9 +108,9 @@ public class CreateUserServlet extends HttpServlet {
         } else {
             newUser.setPassword(user.getPassword());
         }
-        
+
         boolean createSuccess = userManager.CreateUser(newUser);
-        
+
         if (!createSuccess) {
             request.setAttribute("createFailure", "This Username already exists.");
             RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
@@ -123,7 +122,7 @@ public class CreateUserServlet extends HttpServlet {
             return;
         }
 
-        request.setAttribute("createSuccess", "Create Success");     
+        request.setAttribute("createSuccess", "Create Success");
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/createUser.jsp");
         try {
             requestDispatcher.forward(request, response);

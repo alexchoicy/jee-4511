@@ -1,6 +1,5 @@
 package com.cems.Servlet.DamgedReport;
 
-
 import com.cems.Model.Display.DamagesReportDisplay;
 import com.cems.Model.User;
 import com.cems.Utils.ParseUtil;
@@ -31,7 +30,7 @@ public class CreateDamagesReport extends HttpServlet {
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
 
         if (recordID == 0) {
-            //TODO: allow to create a report but not related to a booking
+            // TODO: allow to create a report but not related to a booking
         }
 
         DamagesReportDisplay detail = damagesReportManager.getCreateDamagesDetail(itemID, recordID);
@@ -49,9 +48,8 @@ public class CreateDamagesReport extends HttpServlet {
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
 
         if (recordID == 0) {
-            //TODO: allow to create a report but not related to a booking
+            // TODO: allow to create a report but not related to a booking
         }
-        System.out.println("itemID " + itemID + " record " + recordID);
         User user = (User) req.getSession().getAttribute("user");
         String damageDetail = req.getParameter("damageDetail");
 

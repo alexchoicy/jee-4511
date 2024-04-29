@@ -59,7 +59,6 @@ public class ReservationManager extends DatabaseManager {
                 int itemcount = 0;
                 for (EquipmentItem equipment : equipments) {
                     itemcount++;
-                    System.out.println("itemCount :" + itemcount + " , Request Quantity: " + cartItem.getQuantity());
                     if (!equipment.isListed()) {
                         errorsItems
                                 .add(String.format("Item %s is not Listed to reservation", cartItem.getEquipmentID()));
@@ -188,7 +187,7 @@ public class ReservationManager extends DatabaseManager {
 
     public Reservations getReservation(int recordID) throws SQLException, IOException, ClassNotFoundException {
         String sql = "SELECT * FROM reservation INNER JOIN user ON user.user_id = reservation.user_id INNER JOIN location ON location.location_id = reservation.destination_id INNER JOIN reservation_items ON reservation.reservation_id = reservation_items.reservation_id INNER JOIN equipment_item ON reservation_items.equipment_item_id = equipment_item.equipment_item_id INNER JOIN equipment ON equipment_item.equipment_id = equipment.equipment_id WHERE reservation.reservation_id = ?";
-        try(Connection connection = getConnection()) {
+        try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, recordID);
             ResultSet resultSet = statement.executeQuery();

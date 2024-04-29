@@ -23,8 +23,8 @@ import java.util.Set;
 public class EquipmentManager extends DatabaseManager {
 
     public PagedResult<ArrayList<Equipment>> getEquipmentList(int userId, UserRoles roles, String searchText,
-                                                              int locationId, boolean showWishlistOnly, boolean showStaffOnly, boolean isListed,
-                                                              boolean showAvailableOnly, int page, int pageSize) {
+            int locationId, boolean showWishlistOnly, boolean showStaffOnly, boolean isListed,
+            boolean showAvailableOnly, int page, int pageSize) {
         PagedResult<ArrayList<Equipment>> result = new PagedResult<>();
         int offset = (page - 1) * pageSize;
 
@@ -111,7 +111,6 @@ public class EquipmentManager extends DatabaseManager {
             searchStatement.setInt(index++, pageSize);
             searchStatement.setInt(index++, offset);
 
-
             try (ResultSet countResultSet = countStatement.executeQuery()) {
                 if (countResultSet.next()) {
                     result.setTotal(countResultSet.getInt(1));
@@ -149,11 +148,11 @@ public class EquipmentManager extends DatabaseManager {
         return null;
     }
 
-    public EquipmentDisplay getEquipmentDetail(int user_id,int equipmentId) {
+    public EquipmentDisplay getEquipmentDetail(int user_id, int equipmentId) {
         String sql = "SELECT *, CASE WHEN w.wishlist_id IS NOT NULL THEN TRUE ELSE FALSE END as isWishlisted FROM equipment LEFT JOIN equipment_item ON equipment.equipment_id = equipment_item.equipment_id LEFT JOIN wishlist_items w ON equipment.equipment_id = w.equipment_id AND w.user_id = ? LEFT JOIN location ON equipment_item.current_location = location.location_id WHERE equipment.equipment_id = ?";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1,user_id );
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, user_id);
             statement.setInt(2, equipmentId);
 
             EquipmentDisplay equipmentDisplay = new EquipmentDisplay();
@@ -209,7 +208,7 @@ public class EquipmentManager extends DatabaseManager {
         ArrayList<EquipmentItem> items = new ArrayList<>();
         String sql = "SELECT * FROM equipment_item INNER JOIN location ON equipment_item.current_location = location.location_id WHERE equipment_id = ? AND serial_number LIKE ? OR equipment_item_id = ? ORDER BY equipment_item_id DESC";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, equipmentID);
             statement.setString(2, "%" + searchText + "%");
             statement.setInt(3, ParseUtil.tryParseInt(searchText, 0));
@@ -248,7 +247,8 @@ public class EquipmentManager extends DatabaseManager {
         return item;
     }
 
-    public boolean deleteEquipmentItem(int equipmentId, int itemId) throws SQLException, IOException, ClassNotFoundException, ItemsInUseException, ItemNotFoundException {
+    public boolean deleteEquipmentItem(int equipmentId, int itemId)
+            throws SQLException, IOException, ClassNotFoundException, ItemsInUseException, ItemNotFoundException {
         String deleteSql = "DELETE FROM equipment_item WHERE equipment_id = ? AND equipment_item_id = ?";
         String checkSql = "SELECT status FROM equipment_item WHERE equipment_id = ? AND equipment_item_id = ?";
         Connection connection = getConnection();
@@ -270,7 +270,8 @@ public class EquipmentManager extends DatabaseManager {
         return true;
     }
 
-    public boolean deleteEquipment(int equipmentId) throws SQLException, IOException, ClassNotFoundException, HasItemsException, EquipmentNotFoundException {
+    public boolean deleteEquipment(int equipmentId)
+            throws SQLException, IOException, ClassNotFoundException, HasItemsException, EquipmentNotFoundException {
         String countSql = "SELECT COUNT(*) FROM equipment_item WHERE equipment_id = ?";
         String deleteSql = "DELETE FROM equipment WHERE equipment_id = ?";
         String removeWishListedSql = "DELETE FROM wishlist_items WHERE equipment_id = ?";
@@ -297,11 +298,12 @@ public class EquipmentManager extends DatabaseManager {
         return true;
     }
 
-    public ArrayList<CreateEquipmentItem> createEquipmentItems(int equipmentId, ArrayList<CreateEquipmentItem> newItems) {
+    public ArrayList<CreateEquipmentItem> createEquipmentItems(int equipmentId,
+            ArrayList<CreateEquipmentItem> newItems) {
         String sql = "INSERT INTO equipment_item (equipment_id, serial_number, status, current_location, detail) VALUES (?, ?, ?, ?, ?)";
         String checkSql = "SELECT COUNT(*) FROM equipment_item WHERE equipment_id = ? AND serial_number = ?";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             connection.setAutoCommit(false);
             Set<String> serialNumbers = new HashSet<>();
             ArrayList<CreateEquipmentItem> errorItems = new ArrayList<>();
@@ -338,9 +340,7 @@ public class EquipmentManager extends DatabaseManager {
             }
             int[] result = statement.executeBatch();
             connection.commit();
-            System.out.println("length" + result.length);
             for (int i = 0; i < result.length; i++) {
-                System.out.println("result" + result[i]);
                 if (result[i] == 0) {
                     newItems.get(i).setErrorMessages("Failed to insert into database");
                 }
@@ -356,10 +356,11 @@ public class EquipmentManager extends DatabaseManager {
         }
     }
 
-    public boolean editEquipment(int equipmentId, String name, String description, boolean isStaffOnly, boolean isListed) {
+    public boolean editEquipment(int equipmentId, String name, String description, boolean isStaffOnly,
+            boolean isListed) {
         String sql = "UPDATE equipment SET equipment_name = ?, description = ?, isStaffOnly = ?, isListed = ? WHERE equipment_id = ?";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, name);
             statement.setString(2, description);
             statement.setBoolean(3, isStaffOnly);
@@ -373,11 +374,10 @@ public class EquipmentManager extends DatabaseManager {
         }
     }
 
-
     public Equipment CreateEquipment(Equipment equipment) {
         String sql = "INSERT INTO equipment (equipment_name, description, isStaffOnly, isListed, image_path) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, equipment.getName());
             statement.setString(2, equipment.getDescription());
             statement.setBoolean(3, equipment.isStaffOnly());
@@ -396,8 +396,10 @@ public class EquipmentManager extends DatabaseManager {
         return null;
     }
 
-    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity) throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
-        String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN equipment_item on equipment.equipment_id = equipment_item.equipment_id" +
+    public ReservationCart addItemsToCart(UserRoles role, int equipmentId, int quantity)
+            throws StaffOnlyException, SQLException, IOException, ClassNotFoundException, NotEnoughItemException {
+        String sql = "select equipment.equipment_id, equipment.equipment_name, equipment.isStaffOnly , COALESCE(COUNT(equipment_item.equipment_id), 0) as available_quantity FROM equipment LEFT JOIN equipment_item on equipment.equipment_id = equipment_item.equipment_id"
+                +
                 " where equipment.equipment_id = ? GROUP BY equipment.equipment_id";
         ReservationCart cartItem = null;
 
@@ -424,8 +426,8 @@ public class EquipmentManager extends DatabaseManager {
         String sql = "SELECT equipment_id, equipment_name FROM equipment";
         ArrayList<ItemsOptions> items = new ArrayList<>();
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 ItemsOptions item = new ItemsOptions();
                 item.setId(resultSet.getInt("equipment_id"));
@@ -441,7 +443,7 @@ public class EquipmentManager extends DatabaseManager {
     public void saveImage(int equipmentId, String imagePath) {
         String sql = "UPDATE equipment SET image_path = ? WHERE equipment_id = ?";
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, imagePath);
             statement.setInt(2, equipmentId);
             statement.executeUpdate();

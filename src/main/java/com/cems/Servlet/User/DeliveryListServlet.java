@@ -46,7 +46,6 @@ public class DeliveryListServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        System.out.println("DeliveryListServlet doGet");
         ArrayList<DeliveryDisplay> deliveryDisplay = deliveryManager.getDeliveryRecods();
 
         request.setAttribute("deliveryDisplay", deliveryDisplay);

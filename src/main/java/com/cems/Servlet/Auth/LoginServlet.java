@@ -36,11 +36,9 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("LoginServlet doPost");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         User user = userManager.Login(username, password);
-        System.out.println(username + " " + password);
         if (user == null) {
             request.setAttribute("error", "Invalid username or password");
             request.setAttribute("username", username);
@@ -57,8 +55,6 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("user", user);
         session.setMaxInactiveInterval(60 * 60 * 24);
-
-        System.out.println("User: " + user);
 
         AuthUtils.redirectToIndex(request, response);
     }

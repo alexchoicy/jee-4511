@@ -13,10 +13,11 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.util.UUID;
 
-@WebServlet(name = "UploadResourcesServlet", value=  "/uploadResources")
+@WebServlet(name = "UploadResourcesServlet", value = "/uploadResources")
 @MultipartConfig
 public class UploadResourcesServlet extends HttpServlet {
     private EquipmentManager equipmentManager;
+
     @Override
     public void init() throws ServletException {
         equipmentManager = new EquipmentManager();
@@ -25,10 +26,8 @@ public class UploadResourcesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Part filePart = req.getPart("file");
-        System.out.println("filePart: " + filePart);
-        int equipmentId = ParseUtil.tryParseInt(req.getParameter("id"),0);
+        int equipmentId = ParseUtil.tryParseInt(req.getParameter("id"), 0);
         String filename = filePart.getSubmittedFileName();
-        System.out.println("filename: " + filename + " equipmentId: " + equipmentId);
         String extension = filename.substring(filename.lastIndexOf("."));
         String path = getClass().getClassLoader().getResource("images/equipments").getPath();
 
@@ -39,7 +38,7 @@ public class UploadResourcesServlet extends HttpServlet {
 
         String newName = UUID.randomUUID().toString();
         String savePath = path + File.separator + newName + extension;
-        try(InputStream inputStream = filePart.getInputStream()) {
+        try (InputStream inputStream = filePart.getInputStream()) {
             FileOutputStream outputStream = new FileOutputStream(savePath);
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -53,6 +52,7 @@ public class UploadResourcesServlet extends HttpServlet {
         equipmentManager.saveImage(equipmentId, "resources/images/equipments/" + newName + extension);
         resp.sendRedirect(req.getContextPath() + "/equipment/" + equipmentId);
     }
+
     private String getFileName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         String[] tokens = contentDisp.split(";");

@@ -31,14 +31,14 @@ public class ViewReservation extends HttpServlet {
         }
 
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
-        if (recordID == 0 ) {
+        if (recordID == 0) {
             resp.sendRedirect(req.getContextPath() + "/reservations");
         }
 
         try {
             Reservations reservation = reservationManager.getReservation(recordID);
             req.setAttribute("reservation", reservation);
-            req.getRequestDispatcher("/WEB-INF/views/reservation/detail.jsp").forward(req,resp);
+            req.getRequestDispatcher("/WEB-INF/views/reservation/detail.jsp").forward(req, resp);
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -52,12 +52,11 @@ public class ViewReservation extends HttpServlet {
         }
 
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
-        if (recordID == 0 ) {
+        if (recordID == 0) {
             resp.sendRedirect(req.getContextPath() + "/reservations");
         }
 
         ReservationAction action = ReservationAction.getAction(ParseUtil.tryParseInt(req.getParameter("action"), 0));
-        System.out.println("Action: " + action + " RecordID: " + recordID);
         boolean success = false;
         switch (action) {
             case APPROVE:

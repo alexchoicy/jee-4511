@@ -43,12 +43,12 @@ public class deliveryItemDetailServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        System.out.println("DeliveryListServlet doGet");
         ArrayList<DeliveryDisplay> deliveryDisplay = deliveryManager.getDelivery();
 
         request.setAttribute("deliveryDisplay", deliveryDisplay);
 
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/deliveryItemDetail.jsp");
+        RequestDispatcher requestDispatcher = request
+                .getRequestDispatcher("/WEB-INF/views/user/deliveryItemDetail.jsp");
         requestDispatcher.forward(request, response);
     }
 
@@ -57,10 +57,10 @@ public class deliveryItemDetailServlet extends HttpServlet {
             AuthUtils.redirectToLogin(request, response);
             return;
         }
-        
+
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        
+
         request.setAttribute("user", user);
     }
 }

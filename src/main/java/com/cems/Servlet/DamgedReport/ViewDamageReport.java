@@ -25,7 +25,6 @@ public class ViewDamageReport extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
-        System.out.println("RecordID: " + recordID);
         DamagesReportDisplay damagesReportDisplay = damagesReportManager.getDamageReport(recordID);
 
         req.setAttribute("damageData", damagesReportDisplay);
@@ -36,7 +35,6 @@ public class ViewDamageReport extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int recordID = ParseUtil.tryParseInt(req.getParameter("recordID"), 0);
         DamagedStatus status = DamagedStatus.valueOf(ParseUtil.tryParseInt(req.getParameter("action"), 0));
-        System.out.println("RecordID: " + recordID + " Status: " + status);
         if (recordID == 0 || status == null) {
             resp.getWriter().println("Invalid request");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

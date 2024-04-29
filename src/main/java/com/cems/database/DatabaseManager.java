@@ -14,7 +14,6 @@ public abstract class DatabaseManager {
             e.printStackTrace();
         }
         Class.forName("com.mysql.cj.jdbc.Driver");
-        System.out.println("URL: " + com.cems.secret.DatabaseInfo.url + " Username: " + com.cems.secret.DatabaseInfo.username + " Password: " + com.cems.secret.DatabaseInfo.password);
         String url = com.cems.secret.DatabaseInfo.url;
         String username = com.cems.secret.DatabaseInfo.username;
         String password = com.cems.secret.DatabaseInfo.password;

@@ -40,19 +40,19 @@ public class EquipmentDetailServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         if (!AuthUtils.isLogged(request)) {
             AuthUtils.redirectToLogin(request, response);
             return;
         }
 
         String search = request.getParameter("search");
-        System.out.println("search: " + search);
         String pathInfo = request.getPathInfo(); // /{id}
         String[] pathParts = pathInfo.split("/");
-        for (String part : pathParts) {
-            System.out.println(part);
-        }
+        // for (String part : pathParts) {
+        // System.out.println(part);
+        // }
         String value = pathParts[1];
 
         if (value.equals("create")) {
@@ -71,12 +71,10 @@ public class EquipmentDetailServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        System.out.println(pathParts.length);
         if (pathParts.length == 2 && search == null) {
             GetEquipmentDetail(request, response, equipmentId);
             return;
         } else if (pathParts.length == 2) {
-            System.out.println("search: " + search);
             GetEquipmentDetailWithSearch(request, response, equipmentId, search);
             return;
         }
@@ -94,17 +92,18 @@ public class EquipmentDetailServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        if (!AuthUtils.isAdmin(request)) {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//            return;
-//        }
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // if (!AuthUtils.isAdmin(request)) {
+        // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        // return;
+        // }
 
         String pathInfo = request.getPathInfo(); // /{id}/items/{id}
         String[] pathParts = pathInfo.split("/");
-        for (int i = 0; i < pathParts.length; i++) {
-            System.out.println(i + ": " + pathParts[i]);
-        }
+        // for (int i = 0; i < pathParts.length; i++) {
+        // System.out.println(i + ": " + pathParts[i]);
+        // }
         String value = pathParts[1];
         int equipmentId;
         try {
@@ -138,30 +137,30 @@ public class EquipmentDetailServlet extends HttpServlet {
             }
         }
 
-
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        if (!AuthUtils.isAdmin(request)) {
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//            return;
-//        }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // if (!AuthUtils.isAdmin(request)) {
+        // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        // return;
+        // }
 
-        //magic code
-        //my magical fake form data suddenly work back with this
+        // magic code
+        // my magical fake form data suddenly work back with this
         Map<String, String[]> paramMap = request.getParameterMap();
 
-        for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
-            System.out.println(entry.getKey() + ": " + Arrays.toString(entry.getValue()));
-        }
+        // for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+        // System.out.println(entry.getKey() + ": " +
+        // Arrays.toString(entry.getValue()));
+        // }
 
-        System.out.println("Request Payload: " + request.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
         String pathInfo = request.getPathInfo(); // /{id}/items/{id}
         String[] pathParts = pathInfo.split("/");
-        for (int i = 0; i < pathParts.length; i++) {
-            System.out.println(i + ": " + pathParts[i]);
-        }
+        // for (int i = 0; i < pathParts.length; i++) {
+        // System.out.println(i + ": " + pathParts[i]);
+        // }
         String value = pathParts[1];
 
         if (value.equals("create")) {
@@ -178,12 +177,11 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
         // {id}
         if (pathParts.length == 2) {
-            System.out.println("numberOfNewItems: " + request.getParameter("numberOfNewItems"));
             int numberOfNewItems = ParseUtil.tryParseInt(request.getParameter("numberOfNewItems"), 0);
-            System.out.println("numberOfNewItems: " + numberOfNewItems);
             boolean addNewItem = true;
             if (numberOfNewItems > 0) {
-                ArrayList<CreateEquipmentItem> errorItems = CreateNewItems(request, response, equipmentId, numberOfNewItems);
+                ArrayList<CreateEquipmentItem> errorItems = CreateNewItems(request, response, equipmentId,
+                        numberOfNewItems);
                 if (!errorItems.isEmpty()) {
                     addNewItem = false;
                     request.setAttribute("errorItems", errorItems);
@@ -226,7 +224,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
     }
 
-    private void RemoveItemFromCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws IOException {
+    private void RemoveItemFromCart(HttpServletRequest request, HttpServletResponse response, int equipmentId)
+            throws IOException {
         String value = CookieUtils.getCookie(request, "reservationCart");
         ArrayList<ReservationCart> cart = gson.fromJson(value, new TypeToken<ArrayList<ReservationCart>>() {
         }.getType());
@@ -243,8 +242,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         response.getWriter().write("OK");
     }
 
-
-    private void AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws ServletException, IOException {
+    private void AddItemsToCart(HttpServletRequest request, HttpServletResponse response, int equipmentId)
+            throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         UserRoles role = user.getRole();
         int quantity = ParseUtil.tryParseInt(request.getParameter("quantity"), 0);
@@ -286,12 +285,11 @@ public class EquipmentDetailServlet extends HttpServlet {
 
     }
 
-    private void CreateEquipment(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("Create Equipment");
+    private void CreateEquipment(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         String name = request.getParameter("itemName");
         String description = request.getParameter("itemDescription");
 
-        System.out.println("name: " + name + " description: " + description);
         if (name == null || name.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -305,7 +303,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         String isListedString = request.getParameter("isListed");
         boolean isListed = isListedString != null && isListedString.equals("on");
 
-        Equipment equipment = new Equipment(name, description, "resources/images/equipments/awaitUpload.png",isStaffOnly, isListed);
+        Equipment equipment = new Equipment(name, description, "resources/images/equipments/awaitUpload.png",
+                isStaffOnly, isListed);
         equipment = equipmentManager.CreateEquipment(equipment);
 
         if (equipment == null) {
@@ -316,10 +315,10 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
 
         int numberOfNewItems = ParseUtil.tryParseInt(request.getParameter("numberOfNewItems"), 0);
-        System.out.println("numberOfNewItems: " + numberOfNewItems);
 
         if (numberOfNewItems > 0) {
-            ArrayList<CreateEquipmentItem> errorItems = CreateNewItems(request, response, equipment.getId(), numberOfNewItems);
+            ArrayList<CreateEquipmentItem> errorItems = CreateNewItems(request, response, equipment.getId(),
+                    numberOfNewItems);
             if (!errorItems.isEmpty()) {
                 request.setAttribute("errorItems", errorItems);
                 request.getRequestDispatcher("/WEB-INF/views/equipment/ErrorCreate.jsp").forward(request, response);
@@ -330,28 +329,24 @@ public class EquipmentDetailServlet extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/equipment/" + equipment.getId());
     }
 
-    private ArrayList<CreateEquipmentItem> CreateNewItems(HttpServletRequest request, HttpServletResponse response, int equipmentId, int numberOfNewItems) {
+    private ArrayList<CreateEquipmentItem> CreateNewItems(HttpServletRequest request, HttpServletResponse response,
+            int equipmentId, int numberOfNewItems) {
         ArrayList<CreateEquipmentItem> newItems = new ArrayList<>();
 
         for (int i = 1; i <= numberOfNewItems; i++) {
-            System.out.println("i: " + i);
             String serialNumber = request.getParameter("serialNumber[" + i + "]");
             int locationId = ParseUtil.tryParseInt(request.getParameter("locationId[" + i + "]"), 0);
             int status = ParseUtil.tryParseInt(request.getParameter("status[" + i + "]"), 0);
-            System.out.println("serialNumber: " + serialNumber + " locationId: " + locationId + " status: " + status);
             CreateEquipmentItem item = new CreateEquipmentItem(serialNumber, status, locationId);
             newItems.add(item);
         }
 
-        System.out.println("Size :" + newItems.size());
-
-
         return equipmentManager.createEquipmentItems(equipmentId, newItems);
     }
 
-    private boolean EditEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws IOException {
+    private boolean EditEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId)
+            throws IOException {
         String name = request.getParameter("itemName");
-        System.out.println("name: " + name);
         String description = request.getParameter("itemDescription");
 
         if (name == null || name.isEmpty()) {
@@ -367,13 +362,11 @@ public class EquipmentDetailServlet extends HttpServlet {
         String isListedString = request.getParameter("isListed");
         boolean isListed = isListedString != null && isListedString.equals("on");
 
-
-        System.out.println("name: " + name + " description: " + description + " isStaffOnly: " + isStaffOnly + " isListed: " + isListed);
         return equipmentManager.editEquipment(equipmentId, name, description, isStaffOnly, isListed);
     }
 
-
-    private void deleteEquipmentItem(HttpServletRequest request, HttpServletResponse response, int equipmentId, int itemId) throws IOException {
+    private void deleteEquipmentItem(HttpServletRequest request, HttpServletResponse response, int equipmentId,
+            int itemId) throws IOException {
         try {
             boolean status = equipmentManager.deleteEquipmentItem(equipmentId, itemId);
             response.setContentType("text/plain");
@@ -391,7 +384,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
     }
 
-    private void DeleteEquipment(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws IOException {
+    private void DeleteEquipment(HttpServletRequest request, HttpServletResponse response, int equipmentId)
+            throws IOException {
         try {
             boolean status = equipmentManager.deleteEquipment(equipmentId);
             response.setContentType("text/plain");
@@ -428,7 +422,8 @@ public class EquipmentDetailServlet extends HttpServlet {
         }
     }
 
-    private void GetEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId) throws ServletException, IOException {
+    private void GetEquipmentDetail(HttpServletRequest request, HttpServletResponse response, int equipmentId)
+            throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("user");
         EquipmentDisplay equipmentDisplay = equipmentManager.getEquipmentDetail(user.getUserId(), equipmentId);
 
@@ -437,13 +432,13 @@ public class EquipmentDetailServlet extends HttpServlet {
             return;
         }
 
-        System.out.println("equipmentDisplay: " + equipmentDisplay);
         request.setAttribute("equipmentDisplay", equipmentDisplay);
 
         request.getRequestDispatcher("/WEB-INF/views/equipment/detail.jsp").forward(request, response);
     }
 
-    private void GetEquipmentDetailWithSearch(HttpServletRequest request, HttpServletResponse response, int equipmentId, String search) throws ServletException, IOException {
+    private void GetEquipmentDetailWithSearch(HttpServletRequest request, HttpServletResponse response, int equipmentId,
+            String search) throws ServletException, IOException {
         ArrayList<EquipmentItem> items = equipmentManager.getEquipmentItemWithSearch(equipmentId, search);
 
         StringBuilder jsonBuilder = new StringBuilder();
@@ -452,7 +447,6 @@ public class EquipmentDetailServlet extends HttpServlet {
 
         for (int i = 0; i < items.size(); i++) {
             EquipmentItem item = items.get(i);
-            System.out.println("item: " + item.getId());
             jsonBuilder.append("{");
 
             jsonBuilder.append("\"id\":").append(item.getId()).append(",");

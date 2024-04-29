@@ -19,16 +19,16 @@ public class addWishList extends HttpServlet {
     public void init() throws ServletException {
         wishListManager = new WishListManager();
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = (User) req.getSession().getAttribute("user");
-        int equipment_id = ParseUtil.tryParseInt(req.getParameter("id"),0);
-        System.out.println("removeWishListed" + equipment_id);
+        int equipment_id = ParseUtil.tryParseInt(req.getParameter("id"), 0);
         if (equipment_id == 0) {
             resp.sendRedirect(req.getContextPath() + "/wishList");
             return;
         }
-        wishListManager.addWishList(user.getUserId(),equipment_id);
+        wishListManager.addWishList(user.getUserId(), equipment_id);
         resp.sendRedirect(req.getContextPath() + "/wishList");
     }
 }

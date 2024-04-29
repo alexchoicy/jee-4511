@@ -74,7 +74,6 @@ public class DamagesReportManager extends DatabaseManager {
             statement.executeQuery();
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                System.out.println("damaged_record_id: " + resultSet.getInt("damaged_record_id"));
                 DamagesReportDisplay damagesReportDisplay = new DamagesReportDisplay();
                 damagesReportDisplay.setRecordID(resultSet.getInt("damaged_record_id"));
                 damagesReportDisplay.setBorrowerID(resultSet.getInt("user_id"));

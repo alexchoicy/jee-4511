@@ -14,22 +14,18 @@ public class ResourcesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getPathInfo();
-        System.out.println("path: " + path);
         if (path == null || path.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         String[] pathParts = path.split("/");
-        for (String part : pathParts) {
-            System.out.println(part);
-        }
+        // for (String part : pathParts) {
+        // System.out.println(part);
+        // }
         String type = pathParts[1];
-        System.out.println("type: " + type);
 
         if (type.equals("images")) {
-            System.out.println("loading images");
-            System.out.println("resources" + path);
             try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path)) {
                 if (inputStream == null) {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -47,7 +43,7 @@ public class ResourcesServlet extends HttpServlet {
                     response.setContentType("image/svg+xml");
                 } else if (path.endsWith(".webp")) {
                     response.setContentType("image/webp");
-                }                else {
+                } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }

@@ -26,15 +26,14 @@ public class UserServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
         if (!AuthUtils.isLogged(request)) {
             AuthUtils.redirectToLogin(request, response);
             return;
         }
 
-        System.out.println("UserServlet doGet");
         ArrayList<User> users = userManager.getUsers();
-//        System.out.println(users);
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/WEB-INF/views/user/users.jsp");
         request.setAttribute("users", users);
@@ -93,7 +92,8 @@ public class UserServlet extends HttpServlet {
             if (!editPassword.isEmpty()) {
                 if (!editPassword.equals(newPassword) || newPassword.isEmpty()) {
                     request.setAttribute("passwordDiff", "The new password is different. Please check again.");
-                    request.getSession().setAttribute("passwordDiff", "The new password is different. Please check again.");
+                    request.getSession().setAttribute("passwordDiff",
+                            "The new password is different. Please check again.");
                     try {
                         response.sendRedirect(request.getContextPath() + "/users");
                     } catch (Exception e) {

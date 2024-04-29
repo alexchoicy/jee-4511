@@ -11,11 +11,9 @@ public class UserManager extends DatabaseManager {
     public ArrayList<User> getUsers() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user";
-            System.out.println("sql: " + sql);
             Statement statement = connection.createStatement();
 
             boolean results = statement.execute(sql);
-            System.out.println("results: " + results);
             if (!results) {
                 return null;
             }
@@ -39,11 +37,9 @@ public class UserManager extends DatabaseManager {
     public ArrayList<User> getDeliveryName() {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM user WHERE role = 4";
-            System.out.println("sql: " + sql);
             Statement statement = connection.createStatement();
 
             boolean results = statement.execute(sql);
-            System.out.println("results: " + results);
             if (!results) {
                 return null;
             }
